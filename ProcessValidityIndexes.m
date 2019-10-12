@@ -20,41 +20,29 @@ function ValidityIndexes = ProcessValidityIndexes(DataMatrix, SampleLabels, Posi
 	    PositiveClasses = arrayfun(@num2str, PositiveClasses, 'UniformOutput', false);
 	end
 
-	UniqueSampleLabels = unique(SampleLabels);
-	LenUniqueLabels = length(UniqueSampleLabels);
-	NumericSampleLabels = GenerateNumericLabels(SampleLabels, UniqueSampleLabels, LenUniqueLabels);
-
-	GeneratedClusters = GenerateClusters(DataMatrix, SampleLabels, UniqueSampleLabels, LenUniqueLabels);
-	Dimensions = GenerateDimensions(DataMatrix);
+	OriginData.DataMatrix = DataMatrix;
+	OriginData.SampleLabels = SampleLabels;
+	OriginData.PositiveClasses = PositiveClasses;
+	OriginData.UniqueSampleLabels = unique(SampleLabels);
+	OriginData.LenUniqueLabels = length(OriginData.UniqueSampleLabels);
+	OriginData.NumericSampleLabels = GenerateNumericLabels(OriginData.SampleLabels, OriginData.UniqueSampleLabels, OriginData.LenUniqueLabels);
+	OriginData.GeneratedClusters = GenerateClusters(OriginData.DataMatrix, OriginData.SampleLabels, OriginData.UniqueSampleLabels, OriginData.LenUniqueLabels);
+	OriginData.Dimensions = GenerateDimensions(OriginData.DataMatrix);
 
 	%% Selecting indexes to process
-	SelectedIndexes = IndexSelection();
+	SelectedIndexes = PromptIndexSelection();
 
-	%% Processing the validity indexes
-    GenerateLogs(logger, 'Processing validity indexes (CVIs)...');
-	for mi=1:length(SelectedIndexes)
-		CurrentIndex = SelectedIndexes(mi);
+	%% Selecting if null model will be applied
+	[ApplyNullModel, NumberOfIterations] = PromptNullModel();
 
-		switch CurrentIndex
-			case 1
-				[ValidityIndexes.psip, ValidityIndexes.psiroc, ValidityIndexes.psipr, ~, ~] = ProjectionSeparabilityIndex(DataMatrix, SampleLabels, PositiveClasses, Dimensions, 'median');
-			case 2
-				ValidityIndexes.dn = indexDN(DataMatrix, SampleLabels, 'euclidean');
-			case 3
-				db = db_index(DataMatrix, NumericSampleLabels);
-				ValidityIndexes.db = 1/(1+db); % Inverting the value
-			case 4
-				ValidityIndexes.bz = bezdek_index_n(GeneratedClusters);
-			case 5
-				ValidityIndexes.ch = cal_har_k_index(DataMatrix, NumericSampleLabels);
-			case 6
-				sh = silhouette(DataMatrix, NumericSampleLabels, 'Euclidean');
-				ValidityIndexes.sh = mean(sh); % Getting the mean of the values
-			case 7
-				ValidityIndexes.th = thornton(DataMatrix, SampleLabels, UniqueSampleLabels, LenUniqueLabels);
-			otherwise
-				error('Undefined; this index is not available');
-		end
+	if ApplyNullModel
+		%% Processing null model
+   		GenerateLogs(logger, 'Processing null model...');
+   		IndexesValues = GenerateIndexesValues(SelectedIndexes, OriginData);
+		ValidityIndexes = GenerateNullModel(NumberOfIterations, SelectedIndexes, OriginData, IndexesValues);
+	else
+		%% Processing validity indexes
+   		GenerateLogs(logger, 'Processing validity indexes...');
+		ValidityIndexes = GenerateIndexesValues(SelectedIndexes, OriginData);	
 	end
-	
 end

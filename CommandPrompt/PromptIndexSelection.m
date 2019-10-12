@@ -1,4 +1,4 @@
-function SelectedIndexes = IndexSelection()
+function SelectedIndexes = PromptIndexSelection()
 	SelectedIndexes = [];
 	correct = false;
 

@@ -1,13 +1,14 @@
-function ValidityIndexes = ProcessValidityIndexes(DataMatrix, SampleLabels, PositiveClasses, Dimensions)
+function ValidityIndexes = ProcessValidityIndexes(DataMatrix, SampleLabels, PositiveClasses)
 	% Setting paths
 	mainPath = strcat(pwd,'/');
 	if (~isdeployed)
 	    addpath(strcat(mainPath, 'Generators/'));
 	    addpath(strcat(mainPath, 'ValidityIndexes/'));
+	    addpath(strcat(mainPath, 'CommandPrompt/'));
 	end
 
 	% Setting logger level (true = enable, false = disable)
-	logger = false;
+	logger = true;
 
 	% Transforming labels
 	if isnumeric(SampleLabels)
@@ -24,16 +25,36 @@ function ValidityIndexes = ProcessValidityIndexes(DataMatrix, SampleLabels, Posi
 	NumericSampleLabels = GenerateNumericLabels(SampleLabels, UniqueSampleLabels, LenUniqueLabels);
 
 	GeneratedClusters = GenerateClusters(DataMatrix, SampleLabels, UniqueSampleLabels, LenUniqueLabels);
+	Dimensions = GenerateDimensions(DataMatrix);
+
+	%% Selecting indexes to process
+	SelectedIndexes = IndexSelection();
 
 	%% Processing the validity indexes
     GenerateLogs(logger, 'Processing validity indexes (CVIs)...');
-	[ValidityIndexes.psip, ValidityIndexes.psiroc, ValidityIndexes.psipr, ~, ~] = ProjectionSeparabilityIndex(DataMatrix, SampleLabels, PositiveClasses, Dimensions, 'median');
-	ValidityIndexes.dn = indexDN(DataMatrix, SampleLabels, 'euclidean');
-	db = db_index(DataMatrix, NumericSampleLabels);
-	ValidityIndexes.db = 1/(1+db); % Inverting the value
-	ValidityIndexes.bz = bezdek_index_n(GeneratedClusters);
-	ValidityIndexes.ch = cal_har_k_index(DataMatrix, NumericSampleLabels);
-	sh = silhouette(DataMatrix, NumericSampleLabels, 'Euclidean');
-	ValidityIndexes.sh = mean(sh); % Getting the mean of the values
-	ValidityIndexes.th = thornton(DataMatrix, SampleLabels, UniqueSampleLabels, LenUniqueLabels);
+	for mi=1:length(SelectedIndexes)
+		CurrentIndex = SelectedIndexes(mi);
+
+		switch CurrentIndex
+			case 1
+				[ValidityIndexes.psip, ValidityIndexes.psiroc, ValidityIndexes.psipr, ~, ~] = ProjectionSeparabilityIndex(DataMatrix, SampleLabels, PositiveClasses, Dimensions, 'median');
+			case 2
+				ValidityIndexes.dn = indexDN(DataMatrix, SampleLabels, 'euclidean');
+			case 3
+				db = db_index(DataMatrix, NumericSampleLabels);
+				ValidityIndexes.db = 1/(1+db); % Inverting the value
+			case 4
+				ValidityIndexes.bz = bezdek_index_n(GeneratedClusters);
+			case 5
+				ValidityIndexes.ch = cal_har_k_index(DataMatrix, NumericSampleLabels);
+			case 6
+				sh = silhouette(DataMatrix, NumericSampleLabels, 'Euclidean');
+				ValidityIndexes.sh = mean(sh); % Getting the mean of the values
+			case 7
+				ValidityIndexes.th = thornton(DataMatrix, SampleLabels, UniqueSampleLabels, LenUniqueLabels);
+			otherwise
+				error('Undefined; this index is not available');
+		end
+	end
+	
 end

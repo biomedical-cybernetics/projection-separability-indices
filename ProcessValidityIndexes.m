@@ -1,4 +1,31 @@
 function ValidityIndexes = ProcessValidityIndexes(DataMatrix, SampleLabels, PositiveClasses)
+	% ProcessValidityIndexes
+	% 	LICENCE:
+	%		- Released under MIT License
+	%	COPYRIGHT:
+	%		- Aldo Acevedo, Sara Ciucci, MingJu Kuo, Claudio Duran, and Carlo Vittorio Cannistraci
+	%   INPUT Values:
+	%		- DataMatrix: Data values (type: numeric/double matrix)
+	%		- SampleLabels: List of sample labels (type: cell array)
+	%		- PositiveClasses: List of positive sample labels (type: cell array)
+	%   OUTPUT Values:
+	%		Without applying a Null Model:
+	%		- Struct: IndexName.IndexValue (the number of indexes varies according to user preferences)
+	%			-> Example: results = ProcessValidityIndexes(MyMatrix, MySamples, MyPositiveClasses);
+	%			-> results.psip (access to PSI-P index value)
+	%		
+	%		Applying a Null Model:
+	%		- Struct: IndexName.NullModelStruct
+	%			* NullModelStruct:
+	%				+ IndexPermutations: Values returned by the index (the amount of values varies according to user preferences)
+	%				+ MaxValue: Maximum value returned by the index (first match)
+	%				+ MinValue: Minimum value returned by the index (first match)
+	%				+ MeanValue: Mean of the values returned by the index
+	%				+ StandardDeviation: Standar deviation obtained from the different values
+	%				+ PValue: Final p-value obtained after applying the null model
+	%			-> Example: results = ProcessValidityIndexes(MyMatrix, MySamples, MyPositiveClasses);
+	%			-> results.psip.MaxValue (access to the maximum value returned by PSI-P index)
+
 	% Setting paths
 	mainPath = strcat(pwd,'/');
 	if (~isdeployed)

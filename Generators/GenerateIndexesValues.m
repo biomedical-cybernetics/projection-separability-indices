@@ -15,8 +15,7 @@ function indexes = GenerateIndexesValues(SelectedIndexes, ProcessData)
 			case 5
 				indexes.ch = cal_har_k_index(ProcessData.DataMatrix, ProcessData.NumericSampleLabels);
 			case 6
-				sh = silhouette(ProcessData.DataMatrix, ProcessData.NumericSampleLabels, 'Euclidean');
-				indexes.sh = mean(sh); % Getting the mean of the values
+				indexes.sh = silhouetteIndex(ProcessData.NumericSampleLabels, ProcessData.DataMatrix, ProcessData.LenUniqueLabels);
 			case 7
 				indexes.th = thornton(ProcessData.DataMatrix, ProcessData.SampleLabels, ProcessData.UniqueSampleLabels, ProcessData.LenUniqueLabels);
 			otherwise

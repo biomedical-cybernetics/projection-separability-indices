@@ -1,3 +1,7 @@
+% Thornton index
+%   MAIN REFERENCE:
+%       - C. Thornton, “Separability is a Learner’s Best Friend,” Springer, London, 1998, pp. 40–46.
+
 % Matlab code for Thornton's separability index
 % Accepts a p x d  matrix X in which each row is a vector
 % of d numeric features (usually norm. into the range 0-1)
@@ -9,6 +13,10 @@
 % on the basis of simple Euclidean distance)
 
 function TH = thornton(x, labels, nameLabels, numbLabels)
+	% thornton
+	%   REFERENCE:
+	%       - Released under MIT License
+
     x = x + 1e-3*randn(size(x));
     p = length(labels);
     d2 = pdist2(x,x);

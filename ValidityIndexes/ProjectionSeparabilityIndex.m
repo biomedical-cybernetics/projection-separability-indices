@@ -1,10 +1,9 @@
-function [psiPvalue, psiAUC, psiAUPR, dataClustered, sortedLabels] = ProjectionSeparabilityIndex(dataMatrix, sampleLabels, positiveClasses, dimensionsNumber, centerFormula)
+function [psiPvalue, psiAUC, psiAUPR, dataClustered, sortedLabels] = ProjectionSeparabilityIndex(dataMatrix, sampleLabels, positiveClasses, centerFormula)
 	% ProjectionSeparabilityIndex
 	%   INPUT Values:
 	%		- dataMatrix: Data values (type: numeric/double matrix)
 	%		- sampleLabels: List of sample labels (type: cell array)
 	%		- positiveClasses: List of positive sample labels (type: cell array)
-	%		- dimensionsNumber: Number of dimensions of the data (type: numeric/double)
 	%		- centerFormula: chosen formula for calculating the centroids (type: char array)
 	%   OUTPUT Values:
 	%		- psiPvalue: Mean of Mann-Whitney p-values (type: numeric/double)
@@ -13,7 +12,7 @@ function [psiPvalue, psiAUC, psiAUPR, dataClustered, sortedLabels] = ProjectionS
 	%		- dataClustered: Created clusters by dividing the sample labels (type: cell array)
 	%		- sortedLabels: List of sample labels sorted by cluster (type: cell array)
 	
-	if nargin < 5
+	if nargin < 4
 		error('not enough input arguments')
 	end
 
@@ -22,6 +21,7 @@ function [psiPvalue, psiAUC, psiAUPR, dataClustered, sortedLabels] = ProjectionS
 	numberUniqueLabels = length(uniqueLabels);
 
 	% checking range of dimensions
+	dimensionsNumber = size(dataMatrix, 2);
 	if (dimensionsNumber > 0)
 		dimsRange = 1:dimensionsNumber;
 	else

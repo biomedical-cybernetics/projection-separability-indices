@@ -1,3 +1,7 @@
+% Dunn Index
+%   MAIN REFERENCE:
+%       - J. C. Dunn, “A fuzzy relative of the ISODATA process and its use in detecting compact well-separated clusters,” J. Cybern., vol. 3, no. 3, pp. 32–57, 1973.
+
 function DI=indexDN(data,labels,distance)   
 %%%Dunn's index for clustering compactness and separation measurement
 % indexDN(data,labels,distance)

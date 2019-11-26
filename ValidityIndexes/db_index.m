@@ -1,3 +1,7 @@
+% Davies-Bouldin index
+%   MAIN REFERENCE:
+%       - D. L. Davies and D. W. Bouldin, “A Cluster Separation Measure,” IEEE Trans. Pattern Anal. Mach. Intell., vol. PAMI-1, no. 2, pp. 224–227, 1979.
+
 function [t,r] = db_index(D, cl, C, p, q)
  
 % DB_INDEX Davies-Bouldin clustering evaluation index.

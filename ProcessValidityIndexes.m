@@ -1,13 +1,41 @@
-function ValidityIndexes = ProcessValidityIndexes(DataMatrix, SampleLabels, PositiveClasses, Dimensions)
+function ValidityIndexes = ProcessValidityIndexes(DataMatrix, SampleLabels, PositiveClasses)
+	% ProcessValidityIndexes
+	% 	LICENCE:
+	%		- Released under MIT License
+	%	COPYRIGHT:
+	%		- Aldo Acevedo, Sara Ciucci, MingJu Kuo, Claudio Duran, and Carlo Vittorio Cannistraci
+	%   INPUT Values:
+	%		- DataMatrix: Data values (type: numeric/double matrix)
+	%		- SampleLabels: List of sample labels (type: cell array)
+	%		- PositiveClasses: List of positive sample labels (type: cell array)
+	%   OUTPUT Values:
+	%		Without applying a Null Model:
+	%		- Struct: IndexName.IndexValue (the number of indexes varies according to user preferences)
+	%			-> Example: results = ProcessValidityIndexes(MyMatrix, MySamples, MyPositiveClasses);
+	%			-> results.psip (access to PSI-P index value)
+	%		
+	%		Applying a Null Model:
+	%		- Struct: IndexName.NullModelStruct
+	%			* NullModelStruct:
+	%				+ IndexPermutations: Values returned by the index (the amount of values varies according to user preferences)
+	%				+ MaxValue: Maximum value returned by the index (first match)
+	%				+ MinValue: Minimum value returned by the index (first match)
+	%				+ MeanValue: Mean of the values returned by the index
+	%				+ StandardDeviation: Standar deviation obtained from the different values
+	%				+ PValue: Final p-value obtained after applying the null model
+	%			-> Example: results = ProcessValidityIndexes(MyMatrix, MySamples, MyPositiveClasses);
+	%			-> results.psip.MaxValue (access to the maximum value returned by PSI-P index)
+
 	% Setting paths
 	mainPath = strcat(pwd,'/');
 	if (~isdeployed)
 	    addpath(strcat(mainPath, 'Generators/'));
 	    addpath(strcat(mainPath, 'ValidityIndexes/'));
+	    addpath(strcat(mainPath, 'CommandPrompt/'));
 	end
 
 	% Setting logger level (true = enable, false = disable)
-	logger = false;
+	logger = true;
 
 	% Transforming labels
 	if isnumeric(SampleLabels)
@@ -19,21 +47,29 @@ function ValidityIndexes = ProcessValidityIndexes(DataMatrix, SampleLabels, Posi
 	    PositiveClasses = arrayfun(@num2str, PositiveClasses, 'UniformOutput', false);
 	end
 
-	UniqueSampleLabels = unique(SampleLabels);
-	LenUniqueLabels = length(UniqueSampleLabels);
-	NumericSampleLabels = GenerateNumericLabels(SampleLabels, UniqueSampleLabels, LenUniqueLabels);
+	OriginData.DataMatrix = DataMatrix;
+	OriginData.SampleLabels = SampleLabels;
+	OriginData.PositiveClasses = PositiveClasses;
+	OriginData.UniqueSampleLabels = unique(SampleLabels);
+	OriginData.LenUniqueLabels = length(OriginData.UniqueSampleLabels);
+	OriginData.NumericSampleLabels = GenerateNumericLabels(OriginData.SampleLabels, OriginData.UniqueSampleLabels, OriginData.LenUniqueLabels);
+	OriginData.GeneratedClusters = GenerateClusters(OriginData.DataMatrix, OriginData.SampleLabels, OriginData.UniqueSampleLabels, OriginData.LenUniqueLabels);
+	OriginData.Dimensions = GenerateDimensions(OriginData.DataMatrix);
 
-	GeneratedClusters = GenerateClusters(DataMatrix, SampleLabels, UniqueSampleLabels, LenUniqueLabels);
+	%% Selecting indexes to process
+	SelectedIndexes = PromptIndexSelection();
 
-	%% Processing the validity indexes
-    GenerateLogs(logger, 'Processing validity indexes (CVIs)...');
-	[ValidityIndexes.psip, ValidityIndexes.psiroc, ValidityIndexes.psipr, ~, ~] = ProjectionSeparabilityIndex(DataMatrix, SampleLabels, PositiveClasses, Dimensions, 'median');
-	ValidityIndexes.dn = indexDN(DataMatrix, SampleLabels, 'euclidean');
-	db = db_index(DataMatrix, NumericSampleLabels);
-	ValidityIndexes.db = 1/(1+db); % Inverting the value
-	ValidityIndexes.bz = bezdek_index_n(GeneratedClusters);
-	ValidityIndexes.ch = cal_har_k_index(DataMatrix, NumericSampleLabels);
-	sh = silhouette(DataMatrix, NumericSampleLabels, 'Euclidean');
-	ValidityIndexes.sh = mean(sh); % Getting the mean of the values
-	ValidityIndexes.th = thornton(DataMatrix, SampleLabels, UniqueSampleLabels, LenUniqueLabels);
+	%% Selecting if null model will be applied
+	[ApplyNullModel, NumberOfIterations] = PromptNullModel();
+
+	if ApplyNullModel
+		%% Processing null model
+   		GenerateLogs(logger, 'Processing null model...');
+   		IndexesValues = GenerateIndexesValues(SelectedIndexes, OriginData);
+		ValidityIndexes = GenerateNullModel(NumberOfIterations, SelectedIndexes, OriginData, IndexesValues);
+	else
+		%% Processing validity indexes
+   		GenerateLogs(logger, 'Processing validity indexes...');
+		ValidityIndexes = GenerateIndexesValues(SelectedIndexes, OriginData);	
+	end
 end

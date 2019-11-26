@@ -1,6 +1,9 @@
-function bez=bezdek_index(a)
- 
+% Bezdek index
+%   MAIN REFERENCES:
+%       - J. C. Bezdek, W. Q. Li, Y. Attikiouzel, and M. Windham, “A geometric approach to cluster validity for normal mixtures,” Soft Comput. - A Fusion Found. Methodol. Appl., vol. 1, no. 4, pp. 166–179, 1997.
+%       - B. Stein, S. M. zu Eissen, Gf. WiBbrock, and M. H. Hanza, “On cluster validity and the information need of users,” no. September, pp. 216–221, 2003.
 
+function bez=bezdek_index(a)
 %% how to use the function
 % for example considering 4 clusters
 % If each cluster is codified as a matrix where

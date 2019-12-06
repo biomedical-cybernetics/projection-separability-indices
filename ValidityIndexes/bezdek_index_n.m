@@ -33,7 +33,7 @@ end
 
 if (numeratore>0)
     %bez=round(100*numeratore/denominatore)/100;
-    bez=(100*numeratore/denominatore)/100;
+    bez=numeratore/denominatore;
     else
         bez=0;
 end

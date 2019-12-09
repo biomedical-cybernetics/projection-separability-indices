@@ -8,18 +8,22 @@ function [ Gs ] = silhouetteIndex(id , data , nClusters)
 % Reference : Color Segmentation Using Improved MountainClustering
 % Technique Version-2 Nk Verma
 
-N = length(data);
+N = size(data, 1);
 Nm = zeros(1,nClusters);
 Sm = zeros(1,nClusters);
 
+if ~isnumeric(id)
+    id = str2num(id);
+end
+
 % Finding no. of points in each cluster
 for i = 1:N
-    Nm(str2num(id(i))) = Nm(str2num(id(i))) +1; 
+    Nm(id(i)) = Nm(id(i)) +1; 
 end    
 
 s = silhouette(data,id);
 for i=1:N
-    Sm(str2num(id(i))) = Sm(str2num(id(i)))+s(i);
+    Sm(id(i)) = Sm(id(i))+s(i);
 end
 
 Sm = Sm./Nm;

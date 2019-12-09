@@ -1,4 +1,4 @@
-# PSI-Indexes
+# PSI-Indeces
 
 ### Measuring group-separability in geometrical space for evaluation of pattern recognition and embedding algorithms
 

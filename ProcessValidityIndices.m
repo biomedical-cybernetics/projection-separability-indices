@@ -1,5 +1,5 @@
-function ValidityIndexes = ProcessValidityIndexes(DataMatrix, SampleLabels, PositiveClasses)
-	% ProcessValidityIndexes
+function ValidityIndices = ProcessValidityIndices(DataMatrix, SampleLabels, PositiveClasses, varargin)
+	% ProcessValidityIndices
 	% 	LICENCE:
 	%		- Released under MIT License
 	%	COPYRIGHT:
@@ -10,8 +10,8 @@ function ValidityIndexes = ProcessValidityIndexes(DataMatrix, SampleLabels, Posi
 	%		- PositiveClasses: List of positive sample labels (type: cell array)
 	%   OUTPUT Values:
 	%		Without applying a Null Model:
-	%		- Struct: IndexName.IndexValue (the number of indexes varies according to user preferences)
-	%			-> Example: results = ProcessValidityIndexes(MyMatrix, MySamples, MyPositiveClasses);
+	%		- Struct: IndexName.IndexValue (the number of indices varies according to user preferences)
+	%			-> Example: results = ProcessValidityIndices(MyMatrix, MySamples, MyPositiveClasses);
 	%			-> results.psip (access to PSI-P index value)
 	%		
 	%		Applying a Null Model:
@@ -23,19 +23,42 @@ function ValidityIndexes = ProcessValidityIndexes(DataMatrix, SampleLabels, Posi
 	%				+ MeanValue: Mean of the values returned by the index
 	%				+ StandardDeviation: Standar deviation obtained from the different values
 	%				+ PValue: Final p-value obtained after applying the null model
-	%			-> Example: results = ProcessValidityIndexes(MyMatrix, MySamples, MyPositiveClasses);
+	%			-> Example: results = ProcessValidityIndices(MyMatrix, MySamples, MyPositiveClasses);
 	%			-> results.psip.MaxValue (access to the maximum value returned by PSI-P index)
 
 	% Setting paths
 	mainPath = strcat(pwd,'/');
 	if (~isdeployed)
 	    addpath(strcat(mainPath, 'Generators/'));
-	    addpath(strcat(mainPath, 'ValidityIndexes/'));
+	    addpath(strcat(mainPath, 'ValidityIndices/'));
 	    addpath(strcat(mainPath, 'CommandPrompt/'));
 	end
 
 	% Setting logger level (true = enable, false = disable)
 	logger = true;
+
+	% Checking extra parameters
+	if ~isempty(varargin) 
+        if mod(length(varargin), 2) ~= 0
+            error('Extra parameters must be in a key value format');
+        end
+		
+		option = find(strcmp(varargin, 'indices'));
+		if ~isempty(option)
+            if ~isa(varargin{option+1}, 'double')
+                error('The value of the option indices must be numeric (e.g. 1) or a range (e.g. 1:7)');
+            end
+			preSelectedIndices = varargin{option+1};
+		end
+
+		option = find(strcmp(varargin, 'nullmodel'));
+		if ~isempty(option)
+            if ~isa(varargin{option+1}, 'double')
+                error('The value of the option nullmodel must be numeric (e.g. 100)');
+            end
+			preSelectedNullModel = varargin{option+1};
+		end
+	end
 
 	% Transforming labels
 	if isnumeric(SampleLabels)
@@ -56,20 +79,29 @@ function ValidityIndexes = ProcessValidityIndexes(DataMatrix, SampleLabels, Posi
 	OriginData.GeneratedClusters = GenerateClusters(OriginData.DataMatrix, OriginData.SampleLabels, OriginData.UniqueSampleLabels, OriginData.LenUniqueLabels);
 	OriginData.Dimensions = GenerateDimensions(OriginData.DataMatrix);
 
-	%% Selecting indexes to process
-	SelectedIndexes = PromptIndexSelection();
+	%% Selecting indices to process
+	if exist('preSelectedIndices', 'var') == 1
+		SelectedIndices = preSelectedIndices;
+	else
+		SelectedIndices = PromptIndexSelection();
+	end
 
 	%% Selecting if null model will be applied
-	[ApplyNullModel, NumberOfIterations] = PromptNullModel();
+	if exist('preSelectedNullModel', 'var') == 1
+		ApplyNullModel = preSelectedNullModel > 0;
+		NumberOfIterations = preSelectedNullModel;
+	else
+		[ApplyNullModel, NumberOfIterations] = PromptNullModel();
+	end
 
 	if ApplyNullModel
 		%% Processing null model
    		GenerateLogs(logger, 'Processing null model...');
-   		IndexesValues = GenerateIndexesValues(SelectedIndexes, OriginData);
-		ValidityIndexes = GenerateNullModel(NumberOfIterations, SelectedIndexes, OriginData, IndexesValues);
+   		IndicesValues = GenerateIndicesValues(SelectedIndices, OriginData);
+		ValidityIndices = GenerateNullModel(NumberOfIterations, SelectedIndices, OriginData, IndicesValues);
 	else
-		%% Processing validity indexes
-   		GenerateLogs(logger, 'Processing validity indexes...');
-		ValidityIndexes = GenerateIndexesValues(SelectedIndexes, OriginData);	
+		%% Processing validity indices
+   		GenerateLogs(logger, 'Processing validity indices...');
+		ValidityIndices = GenerateIndicesValues(SelectedIndices, OriginData);	
 	end
 end

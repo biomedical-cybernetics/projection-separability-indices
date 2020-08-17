@@ -1,4 +1,4 @@
-function NullModel = GenerateNullModel(NumberOfIterations, SelectedIndexes, ProcessData, IndexesValues)
+function NullModel = GenerateNullModel(NumberOfIterations, SelectedIndices, ProcessData, IndicesValues)
     NumberOfSampleLabels = numel(ProcessData.SampleLabels);
     
     parfor ix=1:NumberOfIterations
@@ -16,14 +16,14 @@ function NullModel = GenerateNullModel(NumberOfIterations, SelectedIndexes, Proc
 
         ProcessFields{ix} = PermutedData;
         
-        ModelResults(ix) = GenerateIndexesValues(SelectedIndexes, ProcessFields{ix});
+        ModelResults(ix) = GenerateIndicesValues(SelectedIndices, ProcessFields{ix});
     end
 
-    IndexesNames = GenerateIndexesNames(SelectedIndexes); 
+    IndicesNames = GenerateIndicesNames(SelectedIndices); 
 
-    for ix=1:length(IndexesNames)
-        IndexName = IndexesNames{ix};
-        IndexValue = IndexesValues.(IndexName);
+    for ix=1:length(IndicesNames)
+        IndexName = IndicesNames{ix};
+        IndexValue = IndicesValues.(IndexName);
         IndexPermutations = [ModelResults.(IndexName)];
 
         if strcmp(IndexName, 'psip')

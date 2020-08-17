@@ -104,4 +104,6 @@ function ValidityIndices = ProcessValidityIndices(DataMatrix, SampleLabels, Posi
    		GenerateLogs(logger, 'Processing validity indices...');
 		ValidityIndices = GenerateIndicesValues(SelectedIndices, OriginData);	
 	end
+
+	GenerateLogs(logger, 'Done.');
 end

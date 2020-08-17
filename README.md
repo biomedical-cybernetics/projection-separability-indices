@@ -1,13 +1,165 @@
-# PSI-Indeces
+# Measuring group-separability in geometrical space for evaluation of pattern recognition and embedding algorithms
 
-### Measuring group-separability in geometrical space for evaluation of pattern recognition and embedding algorithms
-
-### Authors
+## Authors
 Aldo Acevedo, Sara Ciucci, Ming-Ju Kuo, Claudio Durán, and Carlo Vittorio Cannistraci
 
-### Abstract
+## Description
 
-Evaluating data separation in a geometrical space is fundamental for pattern recognition. A plethora of dimensionality reduction algorithms have been developed in order to reveale the emergence of geometrical patterns in a low dimensional space of representation in which the highdimensional samples’ similarity is approximated by geometrical distances.  The aim of dimensiolaity reduction is indeed to preserve and unveil the relevant hidden structure of highdimensional data in a visible space. However, statistical measures to evaluate directly in the low dimensional geometrical space the sample group separability attaiend by these algorithms are missing. Certainly, these separability measures could be used both to compare algorithms’ performance and to tune algorithms’ parameters. Here, we propose three statistical measures (PS-ROC, PS-PR and PS-pvalue) which have origine from the Projection Separability (PS) rationale we propose, which is expressly designed to assess group separability of data samples in a geometrical space. Traditional cluster validity indices might be applied in this context but they show limitations because they are not specifically tailored for dimensionality reduction. PS measures were compared to several baseline cluster validity indices (such as Dunn, Davies-Bouldin, Bezdek, Calinski-Harabasz, Silhouette, and Thornton) using five non-linear datasets and six different dimensionality reduction algorithms. The results provide clear evidence that statistical-based measures based on PS rationale are more accurate in the evaluation of sample group separability in the Euclidean space and can be adopted to control the tuning of parameter-dependent dimensionality reduction algorithms. 
+Here we propose a novel rationale named Projection Separability (PS), which is specifically designed to assess group separability of data samples in a geometrical space of dimensionality reduction analyses based on embedding algorithms. Our PS rationale states that any statistical measure that assess the performance of a classification model can be used for evaluating the group separability of dimension reduction results based on the geometrical projection of the samples (points) of two different groups on the line that connects their centroids, and then repeating this procedure for all pairs of groups for which separability evaluation is desired.
+
+### Validity indexes
+
+Based on this new rationale, we implemented three statistical separability measures which we called as Projection Separability Indices (PSIs); the first index, PSI-P, evaluates the separability of the points on the projection line by means of the Mann-Whitney U-test p-value (MW p-value), which is a ranking-based statistical test; the second index, PSI-ROC, adopts as separability measure on the projection line the Area Under the ROC-Curve (AUC-ROC), which provides a measure of trade-off between true positive rate and false positive rate; and the third index, PSI-PR, which uses instead the Area Under the Precision Recall Curve (AUC-PR), which gives a measure of trade-off between precision and sensitivity (a.k.a. recall). Moreover, we have included as well - with the aim of comparison - several commonly used Cluster Validity Indices (CVIs) such as Dunn index (DN), that relies on the distances among clusters and their diameters; Davies-Bouldin index (DB), based on the idea that for a good partition inter-cluster separation as well as intra-cluster homogeneity and compactness should be high; Calinski-Harabasz index (CH), based on the average between-cluster means and within-cluster sum of squares; Silhouette index (SH), that validates the clustering performance based on the pairwise difference of between-cluster and within-cluster distances; Bezdek index (BZ), a variation of the Dunn index; and Thornton’s separability (TH) index, which calculates the average number of instances that share the same class label as their nearest neighbors.
+
+## Execution
+
+**Before starting:** This source code is compatible with MATLAB r2016b or newer versions of it. Keep in mind that lower versions than r2016b has not been tested.
+
+### Running the code
+
+You can easily execute the code by running its main function
+
+```matlab
+ValidityIndices = ProcessValidityIndices(DataMatrix, SampleLabels, PositiveClasses)
+```
+
+The definition of the inputs is as follows:
+
+| Input           | Type             | Description  |
+| --------------- |:----------------:| ----------------------------------------- |
+| DataMatrix      | Matrix of double | Matrix of values (*)                      |
+| SampleLabels    | Cell array       | List of sample labels                     |
+| PositiveClasses | Cell array       | List of positive sample labels (**)       |
+
+_(*) For instance a matrix of NxM which is the result of a dimension reduction method such as Principal Component Analysis (PCA)._
+_(**) Depending on the study positive classes are usually ranked as the labels for who a certain prediction is desired. For example, sick patients (positive class) versus controls (negative class); or burnout (positive class), depession (positive class), control (negative class)._
+
+At first, the user has to select which indexes should be included as part of the output:
+
+```
+Available indices:
+[1] Projection Separability Index (PSI)
+[2] Dunn Index (DN)
+[3] Davies-Bouldin Index (DB)
+[4] Bezdek Index (BZ)
+[5] Calinski and Harabasz Index (CH)
+[6] Silhouette Index (SH)
+[7] Thornton Separability Index (TH)
+# Select your indices (range between 1:7)
+-> 
+```
+
+Here, either a single index (e.g. 1) can be selected, or a group of them (e.g. 4:6). Then, a second prompt will be displayed asking the user if a null model should be applied:
+
+```
+Would you like to apply a null model?:
+[y] Yes
+[n] No
+-> 
+```
+
+Depending of the selection, the algorithm will take two different paths.
+
+#### Without null model
+
+Is the application of a null model is not desired. Then, the program will process all selected validity indexes, once it is finished, it will return a `struct` of values in which a single index can be accessed as `OutputVariable.IndexShortName`.
+
+For instance, if the main function was executed as:
+
+```
+ValidityIndicesResults = ProcessValidityIndices(DataMatrix, SampleLabels, PositiveClasses)
+
+Available indices:
+[1] Projection Separability Index (PSI)
+[2] Dunn Index (DN)
+[3] Davies-Bouldin Index (DB)
+[4] Bezdek Index (BZ)
+[5] Calinski and Harabasz Index (CH)
+[6] Silhouette Index (SH)
+[7] Thornton Separability Index (TH)
+# Select your indices (range between 1:7)
+-> 1:7
+
+Would you like to apply a null model?:
+[y] Yes
+[n] No
+-> n
+
+Processing validity indices...
+
+Done.
+```
+
+Then the variable `ValidityIndicesResults` will contain all indices results. Thus, you can easily access them as `ValidityIndicesResults.psip`, `ValidityIndicesResults.dn`, `ValidityIndicesResults.th`, and so on.
+
+_**Hint: you can run Example1.m for having a quick example of this section.**_
+
+#### Apply null model
+
+On the other hand, if the application of a null model is preferred, then a new command prompt will be displayed in order to specify desired number of iterations:
+
+```
+How many iteration should be applied?:
+# Enter a number higher than 0
+-> 
+```
+
+After this step, all selected validity indexes will be processed according for each null model iteration (*). 
+
+_(*) Note that this execution is implemented by using MATLAB's [parfor](https://de.mathworks.com/help/parallel-computing/parfor.html), which executes for-loop iterations in parallel on workers in a parallel pool._
+
+Once it is finished, it will return a `struct` of values in which the results of the applied null model for a single index can be accessed as `ÒutputVariable.IndexShortName`. This contains the following sub-fields:
+
+| Null model result   | Description                                            |
+| ------------------- | ------------------------------------------------------ |
+| IndexPermutations   | List of generated permutations                         |
+| MaxValue            | Maximum permutation's value                            |
+| MinValue            | Minimum permutation's value                            |
+| MeanValue           | Mean of the permuation values                          |
+| StandardDeviation   | Standard deviation of the permutation values           |
+| PValue              | *p*-value of the generated null model                  |
+
+These sub-fields can be accessed as `ÒutputVariable.IndexShortName.IndexPermutations`, `ÒutputVariable.IndexShortName.PValue`, and so on.
+
+For instance, if the main function was executed as:
+
+```
+NullModelResults = ProcessValidityIndices(DataMatrix, SampleLabels, PositiveClasses)
+
+Available indices:
+[1] Projection Separability Index (PSI)
+[2] Dunn Index (DN)
+[3] Davies-Bouldin Index (DB)
+[4] Bezdek Index (BZ)
+[5] Calinski and Harabasz Index (CH)
+[6] Silhouette Index (SH)
+[7] Thornton Separability Index (TH)
+# Select your indices (range between 1:7)
+-> 1:7
+
+Would you like to apply a null model?:
+[y] Yes
+[n] No
+-> y
+
+How many iteration should be applied?:
+# Enter a number higher than 0
+-> 100
+
+Processing null model...
+
+Done.
+```
+
+Then the variable `NullModelResults` will contain all null model results. Hence, you can easily access them as `NullModelResults.psip.PValue`, `NullModelResults.dn.StandardDeviation`, and so on.
+
+_**Hint: you can run Example2.m for having a quick example of this section.**_
+
+## Quick examples
+
+## License
+
+
 
 ### Contact
 For any problem, please contact:

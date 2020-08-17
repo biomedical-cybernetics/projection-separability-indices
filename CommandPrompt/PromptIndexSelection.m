@@ -1,9 +1,9 @@
-function SelectedIndexes = PromptIndexSelection()
-	SelectedIndexes = [];
+function SelectedIndices = PromptIndexSelection()
+	SelectedIndices = [];
 	correct = false;
 
 	while ~correct
-		fprintf('\nAvailable indexes:\n');
+		fprintf('\nAvailable indices:\n');
 		fprintf('[1] Projection Separability Index (PSI)\n');
 		fprintf('[2] Dunn Index (DN)\n');
 		fprintf('[3] Davies-Bouldin Index (DB)\n');
@@ -11,14 +11,14 @@ function SelectedIndexes = PromptIndexSelection()
 		fprintf('[5] Calinski and Harabasz Index (CH)\n');
 		fprintf('[6] Silhouette Index (SH)\n');
 		fprintf('[7] Thornton Separability Index (TH)\n');
-		fprintf('# Select your indexes (range between 1:7)\n');
-		SelectedIndexes = input('-> ');
-		if isempty(SelectedIndexes)
-            SelectedIndexes = 1:7;
+		fprintf('# Select your indices (range between 1:7)\n');
+		SelectedIndices = input('-> ');
+		if isempty(SelectedIndices)
+            SelectedIndices = 1:7;
             correct = true;
-        elseif max(SelectedIndexes) <= 7 && min(SelectedIndexes) >= 1
-        	if length(SelectedIndexes) == 1
-        		SelectedIndexes = [SelectedIndexes];
+        elseif max(SelectedIndices) <= 7 && min(SelectedIndices) >= 1
+        	if length(SelectedIndices) == 1
+        		SelectedIndices = [SelectedIndices];
         	end
             correct = true;
         else

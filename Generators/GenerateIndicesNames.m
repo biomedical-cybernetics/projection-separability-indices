@@ -1,5 +1,5 @@
 function IndicesNames = GenerateIndicesNames(SelectedIndices)
-	SupportedIndices = {'psi', 'dn', 'db', 'bz', 'ch', 'sh', 'th'};
+	SupportedIndices = {'psi', 'dn', 'db', 'bz', 'ch', 'sh', 'th', 'cvdd'};
 	SelectedIndices = SupportedIndices(SelectedIndices);
 
 	if any(ismember(SelectedIndices, 'psi'))

@@ -36,7 +36,9 @@ function cvddindex = cvdd_index(X, piX)
                 %% compute the compactness com[i]
                 try
                     Ci = fast_PathbasedDist(d(a,a));
+                    % std2 requires Image Processing Toolbox
                     com_list(i,1) = (std2(Ci)/n)*mean(Ci(:));
+                    %com_list(i,1) = (std(Ci(:))/n)*mean(Ci(:));
                 catch
                     com_list(i,1) = max(com_list);
                 end

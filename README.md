@@ -46,7 +46,8 @@ Available indices:
 [5] Calinski and Harabasz Index (CH)
 [6] Silhouette Index (SH)
 [7] Thornton Separability Index (TH)
-# Select your indices (range between 1:7)
+[8] Cluster Validity Density-involved Distance (CVDD)
+# Select your indices (range between 1:8)
 -> 
 ```
 
@@ -78,8 +79,9 @@ Available indices:
 [5] Calinski and Harabasz Index (CH)
 [6] Silhouette Index (SH)
 [7] Thornton Separability Index (TH)
-# Select your indices (range between 1:7)
--> 1:7
+[8] Cluster Validity Density-involved Distance (CVDD)
+# Select your indices (range between 1:8)
+-> 1:8
 
 Would you like to apply a null model?:
 [y] Yes
@@ -135,8 +137,9 @@ Available indices:
 [5] Calinski and Harabasz Index (CH)
 [6] Silhouette Index (SH)
 [7] Thornton Separability Index (TH)
+[8] Cluster Validity Density-involved Distance (CVDD)
 # Select your indices (range between 1:7)
--> 1:7
+-> 1:8
 
 Would you like to apply a null model?:
 [y] Yes
@@ -175,6 +178,7 @@ You can also pre-define the options inputed via command prompt by using the foll
 [5] Calinski and Harabasz Index (CH)
 [6] Silhouette Index (SH)
 [7] Thornton Separability Index (TH)
+[8] Cluster Validity Density-involved Distance (CVDD)
 ```
 
 Also you can input a range. For instance, 1:3 will calculate the PSI, DN, and DB.
@@ -184,16 +188,16 @@ Also you can input a range. For instance, 1:3 will calculate the PSI, DN, and DB
 Let's check some examples:
 
 ```matlab
-results = ProcessValidityIndices(DataMatrix, SampleLabels, PositiveClasses, 'indices', 1:7, 'nullmodel', 0);
+results = ProcessValidityIndices(DataMatrix, SampleLabels, PositiveClasses, 'indices', 1:8, 'nullmodel', 0);
 ```
 
-This will calculate all indices from 1 to 7 (included) without the application of a null model (see Example1.m).
+This will calculate all indices from 1 to 8 (included) without the application of a null model (see Example1.m).
 
 ```matlab
-results = ProcessValidityIndices(DataMatrix, SampleLabels, PositiveClasses, 'indices', 1:7, 'nullmodel', 100);
+results = ProcessValidityIndices(DataMatrix, SampleLabels, PositiveClasses, 'indices', 1:8, 'nullmodel', 100);
 ```
 
-This will calculate all indices from 1 to 7 (included) and apply a null model of 100 iterations (see Example2.m).
+This will calculate all indices from 1 to 8 (included) and apply a null model of 100 iterations (see Example2.m).
 
 ```matlab
 results = ProcessValidityIndices(DataMatrix, SampleLabels, PositiveClasses, 'indices', 1);

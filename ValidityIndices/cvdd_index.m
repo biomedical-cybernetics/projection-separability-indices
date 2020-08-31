@@ -1,9 +1,15 @@
 function cvddindex = cvdd_index(X, piX)
 
     d = pdist2(X,X,'minkowski',2); %Euclidean distance of X
-    DD = Density_involved_distance(d, 7); %Density-involved distance of X
-
-    cvddindex = CVDD(piX, d, DD);
+    try
+        DD = Density_involved_distance(d, 7); %Density-involved distance of X
+        cvddindex = CVDD(piX, d, DD);
+    catch
+        % an error will be catch when the Rel function fails
+        % because of 0 distances between some points (total overlap)
+        % in this case, the minimum value of the index will be returned
+        cvddindex = 0;
+    end
 
     function CVDD = CVDD(piX,d,DD)
         % -------------------------------------------------------------------------

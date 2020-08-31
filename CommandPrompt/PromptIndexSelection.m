@@ -11,12 +11,13 @@ function SelectedIndices = PromptIndexSelection()
 		fprintf('[5] Calinski and Harabasz Index (CH)\n');
 		fprintf('[6] Silhouette Index (SH)\n');
 		fprintf('[7] Thornton Separability Index (TH)\n');
+		fprintf('[8] Cluster Validity Density-involved Distance (CVDD)\n');
 		fprintf('# Select your indices (range between 1:7)\n');
 		SelectedIndices = input('-> ');
 		if isempty(SelectedIndices)
-            SelectedIndices = 1:7;
+            SelectedIndices = 1:8;
             correct = true;
-        elseif max(SelectedIndices) <= 7 && min(SelectedIndices) >= 1
+        elseif max(SelectedIndices) <= 8 && min(SelectedIndices) >= 1
         	if length(SelectedIndices) == 1
         		SelectedIndices = [SelectedIndices];
         	end

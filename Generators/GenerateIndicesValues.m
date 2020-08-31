@@ -18,6 +18,8 @@ function indices = GenerateIndicesValues(SelectedIndices, ProcessData)
 				indices.sh = silhouetteIndex(ProcessData.NumericSampleLabels, ProcessData.DataMatrix, ProcessData.LenUniqueLabels);
 			case 7
 				indices.th = thornton(ProcessData.DataMatrix, ProcessData.SampleLabels, ProcessData.UniqueSampleLabels, ProcessData.LenUniqueLabels);
+			case 8
+				indices.cvdd = cvdd_index(ProcessData.DataMatrix, ProcessData.NumericSampleLabels);
 			otherwise
 				error('Undefined; this index is not available');
 		end

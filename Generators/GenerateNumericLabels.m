@@ -11,6 +11,9 @@ function names = GenerateNumericLabels(SampleLabels, UniqueSampleLabels, LenUniq
     
     try
         names = cell2mat(names);
+        if ~isnumeric(names)
+            names = str2num(names);
+        end
     catch
         names = str2double(names);
     end

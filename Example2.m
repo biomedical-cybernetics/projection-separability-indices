@@ -5,7 +5,7 @@ load(strcat(pwd, "/Examples/tripartiteswissroll.mat"));
 
 % Processing validity indexes
 % Note: nullmodel 100 means that a null model with 100 iterations will be applied
-results = ProcessValidityIndices(DataMatrix, SampleLabels, PositiveClasses, 'indices', 1:8, 'nullmodel', 100);
+results = ProcessValidityIndices(DataMatrix, SampleLabels, PositiveClasses, 'indices', 1:8, 'nullmodel', 1000, 'seed', 100);
 
 % Verbose results
 fields = fieldnames(results);

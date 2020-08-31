@@ -41,7 +41,16 @@ function ValidityIndices = ProcessValidityIndices(DataMatrix, SampleLabels, Posi
 	if ~isempty(varargin) 
         if mod(length(varargin), 2) ~= 0
             error('Extra parameters must be in a key value format');
-        end
+		end
+		
+		option = find(strcmp(varargin, 'seed'));
+		if ~isempty(option)
+            if ~isa(varargin{option+1}, 'double')
+                error('The value of the option seed must be numeric (e.g. 100)');
+			end
+			seed = RandStream.create('mrg32k3a', 'seed', varargin{option+1});
+			RandStream.setGlobalStream(seed);
+		end
 		
 		option = find(strcmp(varargin, 'indices'));
 		if ~isempty(option)

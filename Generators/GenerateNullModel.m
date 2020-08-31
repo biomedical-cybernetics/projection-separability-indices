@@ -1,9 +1,14 @@
 function NullModel = GenerateNullModel(NumberOfIterations, SelectedIndices, ProcessData, IndicesValues)
     NumberOfSampleLabels = numel(ProcessData.SampleLabels);
+    randGenerator = parallel.pool.Constant(RandStream.getGlobalStream());
     
     parfor ix=1:NumberOfIterations
-        idxs = randperm(NumberOfSampleLabels);
-
+        stream = randGenerator.Value;
+        if (stream.Seed ~= 0)
+            stream.Substream = ix;
+        end
+        idxs = randperm(stream, NumberOfSampleLabels);
+        
         PermutedData = struct;
         PermutedData.DataMatrix = ProcessData.DataMatrix;
         PermutedData.SampleLabels = ProcessData.SampleLabels(idxs);
@@ -32,6 +37,7 @@ function NullModel = GenerateNullModel(NumberOfIterations, SelectedIndices, Proc
             PValue = (sum(IndexPermutations > IndexValue)+1)/(NumberOfIterations+1);
         end
 
+        NullModel.(IndexName).IndexValue = IndexValue;
         NullModel.(IndexName).IndexPermutations = IndexPermutations;
         NullModel.(IndexName).MaxValue = max(IndexPermutations);
         NullModel.(IndexName).MinValue = min(IndexPermutations);

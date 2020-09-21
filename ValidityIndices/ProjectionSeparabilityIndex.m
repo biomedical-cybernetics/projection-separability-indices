@@ -1,4 +1,4 @@
-function [psiPvalue, psiAUC, psiAUPR, dataClustered, sortedLabels] = ProjectionSeparabilityIndex(dataMatrix, sampleLabels, positiveClasses, centerFormula)
+function [psiPvalue, psiAUC, psiAUPR, psiMCC, dataClustered, sortedLabels] = ProjectionSeparabilityIndex(dataMatrix, sampleLabels, positiveClasses, centerFormula)
 	% ProjectionSeparabilityIndex
 	%   INPUT Values:
 	%		- dataMatrix: Data values (type: numeric/double matrix)
@@ -101,6 +101,7 @@ function [psiPvalue, psiAUC, psiAUPR, dataClustered, sortedLabels] = ProjectionS
 	psiPvalue = mean([mannWhitneyValues{:}]);
 	psiAUC = mean([aucValues{:}]);
 	psiAUPR = mean([auprValues{:}]);
+	psiMCC = mean([mccValues{:}]);
 
 	%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 	% Sub-functions
@@ -145,28 +146,48 @@ function [psiPvalue, psiAUC, psiAUPR, dataClustered, sortedLabels] = ProjectionS
 	end
 
 	function mcc = computeMCC(labels, scores, positiveClass)
+		totalPositive = sum(strcmp(labels, positiveClass));
+		totalNegative = sum(~strcmp(labels, positiveClass));
+
+		trueLabels = labels;
+		negativeClass = unique(labels(~strcmp(labels, positiveClass)));
+
+		predictedLabels1 = [repmat({positiveClass},totalPositive,1);repmat(negativeClass,totalNegative,1)];
+		predictedLabels2 = [repmat(negativeClass,totalNegative,1);repmat({positiveClass},totalPositive,1)];
+
 		[~, idxs] = sort(scores);
 		sortedLabels = labels(idxs);
-		for mi=1:(length(labels)-1)
-			positive = repmat({'P'},length(sortedLabels(1:mi)),1);
-			negative = repmat({'N'},length(sortedLabels(1+mi:end)),1);
-			predicted = [positive;negative];
 
-			tp = sum(ismember(predicted, positive) & ismember())
+		trueLabels = trueLabels(idxs);
 
-			if (tp == = && fp == 0)
+		predictedLabels1 = predictedLabels1(idxs);
+		tp1 = sum(ismember(predictedLabels1, positiveClass) & ismember(trueLabels, positiveClass));
+		tn1 = sum(ismember(predictedLabels1, negativeClass) & ismember(trueLabels, negativeClass));
+		fp1 = sum(ismember(predictedLabels1, positiveClass) & ismember(trueLabels, negativeClass));
+		fn1 = sum(ismember(predictedLabels1, negativeClass) & ismember(trueLabels, positiveClass));
 
-		end
-		mcc = abs(mcc);
-		mcc = trapz(mcc, [0,1]);
-
-		[~,~,~,auc] = perfcurve(labels, scores, positiveClass);
-		if auc < 0.5
-			auc = 1 - auc;
-			flippedScores = 2 * mean(scores) - scores;
-			aupr = auprEvaluation(labels, flippedScores, positiveClass);
+		if ((tp1 == 0 && fp1 == 0) || (tn1 == 0 && fn1 == 0))
+			mcc1 = 0;
 		else
-			aupr = auprEvaluation(labels, scores, positiveClass);
+			mcc1 = (tp1*tn1 - fp1*fn1)/sqrt((tp1+fp1)*(tp1+fn1)*(tn1+fp1)*(tn1+fn1));
+		end
+
+		predictedLabels2 = predictedLabels2(idxs);
+		tp2 = sum(ismember(predictedLabels2, positiveClass) & ismember(trueLabels, positiveClass));
+		tn2 = sum(ismember(predictedLabels2, negativeClass) & ismember(trueLabels, negativeClass));
+		fp2 = sum(ismember(predictedLabels2, positiveClass) & ismember(trueLabels, negativeClass));
+		fn2 = sum(ismember(predictedLabels2, negativeClass) & ismember(trueLabels, positiveClass));
+
+		if ((tp2 == 0 && fp2 == 0) || (tn2 == 0 && fn2 == 0))
+			mcc2 = 0;
+		else
+			mcc2 = (tp2*tn2 - fp2*fn2)/sqrt((tp2+fp2)*(tp2+fn2)*(tn2+fp2)*(tn2+fn2));
+		end
+
+		if (mcc1 > mcc2)
+			mcc = mcc1;
+		else
+			mcc = mcc2;
 		end
 	end
 

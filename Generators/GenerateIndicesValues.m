@@ -4,7 +4,7 @@ function indices = GenerateIndicesValues(SelectedIndices, ProcessData)
 
 		switch CurrentIndex
 			case 1
-				[indices.psip, indices.psiroc, indices.psipr, ~, ~] = ProjectionSeparabilityIndex(ProcessData.DataMatrix, ProcessData.SampleLabels, ProcessData.PositiveClasses, 'median');
+				[indices.psip, indices.psiroc, indices.psipr, indices.psimcc, ~, ~] = ProjectionSeparabilityIndex(ProcessData.DataMatrix, ProcessData.SampleLabels, ProcessData.PositiveClasses, 'median');
 			case 2
 				indices.dn = indexDN(ProcessData.DataMatrix, ProcessData.SampleLabels, 'euclidean');
 			case 3

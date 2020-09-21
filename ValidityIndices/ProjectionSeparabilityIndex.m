@@ -87,7 +87,9 @@ function [psiPvalue, psiAUC, psiAUPR, dataClustered, sortedLabels] = ProjectionS
 	        end
 	    end
 
-	    [aucValues{l},auprValues{l}] = computeAUCAUPR(sampleLabelsMembership,[clustersProjection1D(1:sizeClusterN);clustersProjection1D(sizeClusterN+1:sizeClusterN+sizeClusterM)],currentPositiveClass);
+		[aucValues{l},auprValues{l}] = computeAUCAUPR(sampleLabelsMembership,[clustersProjection1D(1:sizeClusterN);clustersProjection1D(sizeClusterN+1:sizeClusterN+sizeClusterM)],currentPositiveClass);
+		
+		mccValues{l} = computeMCC(sampleLabelsMembership,[clustersProjection1D(1:sizeClusterN);clustersProjection1D(sizeClusterN+1:sizeClusterN+sizeClusterM)],currentPositiveClass);
 
 	    m = m + 1;
 	    if(m > numberUniqueLabels)
@@ -140,6 +142,32 @@ function [psiPvalue, psiAUC, psiAUPR, dataClustered, sortedLabels] = ProjectionS
 	    end
 	    
 	    V = sqrt(V);
+	end
+
+	function mcc = computeMCC(labels, scores, positiveClass)
+		[~, idxs] = sort(scores);
+		sortedLabels = labels(idxs);
+		for mi=1:(length(labels)-1)
+			positive = repmat({'P'},length(sortedLabels(1:mi)),1);
+			negative = repmat({'N'},length(sortedLabels(1+mi:end)),1);
+			predicted = [positive;negative];
+
+			tp = sum(ismember(predicted, positive) & ismember())
+
+			if (tp == = && fp == 0)
+
+		end
+		mcc = abs(mcc);
+		mcc = trapz(mcc, [0,1]);
+
+		[~,~,~,auc] = perfcurve(labels, scores, positiveClass);
+		if auc < 0.5
+			auc = 1 - auc;
+			flippedScores = 2 * mean(scores) - scores;
+			aupr = auprEvaluation(labels, flippedScores, positiveClass);
+		else
+			aupr = auprEvaluation(labels, scores, positiveClass);
+		end
 	end
 
 	function [auc, aupr] = computeAUCAUPR(labels, scores, positiveClass)

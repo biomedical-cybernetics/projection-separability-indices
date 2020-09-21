@@ -146,49 +146,47 @@ function [psiPvalue, psiAUC, psiAUPR, psiMCC, dataClustered, sortedLabels] = Pro
 	end
 
 	function mcc = computeMCC(labels, scores, positiveClass)
+		% total amount of positive labels
 		totalPositive = sum(strcmp(labels, positiveClass));
+		% total amount of negative labels
 		totalNegative = sum(~strcmp(labels, positiveClass));
 
-		trueLabels = labels;
+		% identifying the negative class
 		negativeClass = unique(labels(~strcmp(labels, positiveClass)));
 
-		predictedLabels1 = [repmat({positiveClass},totalPositive,1);repmat(negativeClass,totalNegative,1)];
-		predictedLabels2 = [repmat(negativeClass,totalNegative,1);repmat({positiveClass},totalPositive,1)];
-
+		% sort the scores and obtained the sorted indices
 		[~, idxs] = sort(scores);
-		sortedLabels = labels(idxs);
 
-		trueLabels = trueLabels(idxs);
+		% sort the original labels according to the sorted scores
+		trueLabels = labels(idxs);
 
-		predictedLabels1 = predictedLabels1(idxs);
-		tp1 = sum(ismember(predictedLabels1, positiveClass) & ismember(trueLabels, positiveClass));
-		tn1 = sum(ismember(predictedLabels1, negativeClass) & ismember(trueLabels, negativeClass));
-		fp1 = sum(ismember(predictedLabels1, positiveClass) & ismember(trueLabels, negativeClass));
-		fn1 = sum(ismember(predictedLabels1, negativeClass) & ismember(trueLabels, positiveClass));
+		for in=1:2
+			% since the position of the clusters is unknown
+			% we take as comparison a perfect segregation in both ways
+			% positive cluster in the left side, and negative cluster in the right side,
+			% and viseversa
+			switch in
+				case 1
+					predictedLabels = [repmat({positiveClass},totalPositive,1);repmat(negativeClass,totalNegative,1)];
+				case 2
+					predictedLabels = [repmat(negativeClass,totalNegative,1);repmat({positiveClass},totalPositive,1)];
+			end
+			% TODO: Confirm if this is needed or not 
+			% predictedLabels = predictedLabels(idxs);
+			TP = sum(ismember(predictedLabels, positiveClass) & ismember(trueLabels, positiveClass));
+			TN = sum(ismember(predictedLabels, negativeClass) & ismember(trueLabels, negativeClass));
+			FP = sum(ismember(predictedLabels, positiveClass) & ismember(trueLabels, negativeClass));
+			FN = sum(ismember(predictedLabels, negativeClass) & ismember(trueLabels, positiveClass));
 
-		if ((tp1 == 0 && fp1 == 0) || (tn1 == 0 && fn1 == 0))
-			mcc1 = 0;
-		else
-			mcc1 = (tp1*tn1 - fp1*fn1)/sqrt((tp1+fp1)*(tp1+fn1)*(tn1+fp1)*(tn1+fn1));
+			if ((TP == 0 && FP == 0) || (TN == 0 && FN == 0))
+				mccVal{in} = 0;
+			else
+				% compute the Matthews Correlation Coefficient (MCC)
+				mccVal{in} = (TP*TN - FP*FN)/sqrt((TP+FP)*(TP+FN)*(TN+FP)*(TN+FN));
+			end
 		end
-
-		predictedLabels2 = predictedLabels2(idxs);
-		tp2 = sum(ismember(predictedLabels2, positiveClass) & ismember(trueLabels, positiveClass));
-		tn2 = sum(ismember(predictedLabels2, negativeClass) & ismember(trueLabels, negativeClass));
-		fp2 = sum(ismember(predictedLabels2, positiveClass) & ismember(trueLabels, negativeClass));
-		fn2 = sum(ismember(predictedLabels2, negativeClass) & ismember(trueLabels, positiveClass));
-
-		if ((tp2 == 0 && fp2 == 0) || (tn2 == 0 && fn2 == 0))
-			mcc2 = 0;
-		else
-			mcc2 = (tp2*tn2 - fp2*fn2)/sqrt((tp2+fp2)*(tp2+fn2)*(tn2+fp2)*(tn2+fn2));
-		end
-
-		if (mcc1 > mcc2)
-			mcc = mcc1;
-		else
-			mcc = mcc2;
-		end
+		% select the best MCC side
+		mcc = max([mccVal{:}]);
 	end
 
 	function [auc, aupr] = computeAUCAUPR(labels, scores, positiveClass)

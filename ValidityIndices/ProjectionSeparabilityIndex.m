@@ -76,7 +76,7 @@ function [psiPvalue, psiAUC, psiAUPR, psiMCC, dataClustered, sortedLabels] = Pro
 	    sizeClusterM = size(dataClustered{m},1);
 	    mannWhitneyValues{l} = ranksum(clustersProjection1D(1:sizeClusterN),clustersProjection1D(sizeClusterN+1:sizeClusterN+sizeClusterM));
 
-	    %% AUC & AUPR
+	    % sample membership
 	    sampleLabelsMembership = [sampleLabels(ismember(sampleLabels,uniqueLabels{n}));sampleLabels(ismember(sampleLabels,uniqueLabels{m}))];
 	    
 	    % selecting the possitive class
@@ -87,8 +87,10 @@ function [psiPvalue, psiAUC, psiAUPR, psiMCC, dataClustered, sortedLabels] = Pro
 	        end
 	    end
 
+		%% AUC & AUPR
 		[aucValues{l},auprValues{l}] = computeAUCAUPR(sampleLabelsMembership,[clustersProjection1D(1:sizeClusterN);clustersProjection1D(sizeClusterN+1:sizeClusterN+sizeClusterM)],currentPositiveClass);
 		
+		%% MCC
 		mccValues{l} = computeMCC(sampleLabelsMembership,[clustersProjection1D(1:sizeClusterN);clustersProjection1D(sizeClusterN+1:sizeClusterN+sizeClusterM)],currentPositiveClass);
 
 	    m = m + 1;
@@ -171,8 +173,8 @@ function [psiPvalue, psiAUC, psiAUPR, psiMCC, dataClustered, sortedLabels] = Pro
 				case 2
 					predictedLabels = [repmat(negativeClass,totalNegative,1);repmat({positiveClass},totalPositive,1)];
 			end
-			% TODO: Confirm if this is needed or not 
-			% predictedLabels = predictedLabels(idxs);
+			
+			% clasifiers
 			TP = sum(ismember(predictedLabels, positiveClass) & ismember(trueLabels, positiveClass));
 			TN = sum(ismember(predictedLabels, negativeClass) & ismember(trueLabels, negativeClass));
 			FP = sum(ismember(predictedLabels, positiveClass) & ismember(trueLabels, negativeClass));

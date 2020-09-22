@@ -4,7 +4,7 @@ function SelectedIndices = PromptIndexSelection()
 
 	while ~correct
 		fprintf('\nAvailable indices:\n');
-		fprintf('[1] Projection Separability Index (PSI)\n');
+		fprintf('[1] Projection Separability Indices (PSIs)\n');
 		fprintf('[2] Dunn Index (DN)\n');
 		fprintf('[3] Davies-Bouldin Index (DB)\n');
 		fprintf('[4] Bezdek Index (BZ)\n');

@@ -4,7 +4,7 @@ function IndicesNames = GenerateIndicesNames(SelectedIndices)
 
 	if any(ismember(SelectedIndices, 'psi'))
 		SelectedIndices(ismember(SelectedIndices, 'psi')) = [];
-		SelectedIndices = horzcat({'psip', 'psiroc', 'psipr'}, SelectedIndices);
+		SelectedIndices = horzcat({'psip', 'psiroc', 'psipr', 'psimcc'}, SelectedIndices);
 	end
 
 	IndicesNames = SelectedIndices;

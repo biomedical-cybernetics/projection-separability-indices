@@ -31,7 +31,7 @@ function NullModel = GenerateNullModel(NumberOfIterations, SelectedIndices, Proc
         IndexValue = IndicesValues.(IndexName);
         IndexPermutations = [ModelResults.(IndexName)];
 
-        if strcmp(IndexName, 'psip')
+        if strcmp(IndexName, 'PSIP')
             PValue = (sum(IndexPermutations < IndexValue)+1)/(NumberOfIterations+1);
         else
             PValue = (sum(IndexPermutations > IndexValue)+1)/(NumberOfIterations+1);

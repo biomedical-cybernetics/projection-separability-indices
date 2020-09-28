@@ -39,13 +39,13 @@ At first, the user has to select which indexes should be included as part of the
 
 ```
 Available indices:
-[1] Projection Separability Index (PSI)
-[2] Dunn Index (DN)
+[1] Projection Separability Indices (PSIs)
+[2] Dunn Index (DI)
 [3] Davies-Bouldin Index (DB)
-[4] Bezdek Index (BZ)
+[4] Generalized Dunn Index (GDI)
 [5] Calinski and Harabasz Index (CH)
-[6] Silhouette Index (SH)
-[7] Thornton Separability Index (TH)
+[6] Silhouette Index (SIL)
+[7] Geometric Separability Index (GSI)
 [8] Cluster Validity Density-involved Distance (CVDD)
 # Select your indices (range between 1:8)
 -> 
@@ -72,13 +72,13 @@ For instance, if the main function was executed as:
 ValidityIndicesResults = ProcessValidityIndices(DataMatrix, SampleLabels, PositiveClasses)
 
 Available indices:
-[1] Projection Separability Index (PSI)
-[2] Dunn Index (DN)
+[1] Projection Separability Indices (PSIs)
+[2] Dunn Index (DI)
 [3] Davies-Bouldin Index (DB)
-[4] Bezdek Index (BZ)
+[4] Generalized Dunn Index (GDI)
 [5] Calinski and Harabasz Index (CH)
-[6] Silhouette Index (SH)
-[7] Thornton Separability Index (TH)
+[6] Silhouette Index (SIL)
+[7] Geometric Separability Index (GSI)
 [8] Cluster Validity Density-involved Distance (CVDD)
 # Select your indices (range between 1:8)
 -> 1:8
@@ -131,13 +131,13 @@ For instance, if the main function was executed as:
 NullModelResults = ProcessValidityIndices(DataMatrix, SampleLabels, PositiveClasses)
 
 Available indices:
-[1] Projection Separability Index (PSI)
-[2] Dunn Index (DN)
+[1] Projection Separability Indices (PSIs)
+[2] Dunn Index (DI)
 [3] Davies-Bouldin Index (DB)
-[4] Bezdek Index (BZ)
+[4] Generalized Dunn Index (GDI)
 [5] Calinski and Harabasz Index (CH)
-[6] Silhouette Index (SH)
-[7] Thornton Separability Index (TH)
+[6] Silhouette Index (SIL)
+[7] Geometric Separability Index (GSI)
 [8] Cluster Validity Density-involved Distance (CVDD)
 # Select your indices (range between 1:8)
 -> 1:8
@@ -173,17 +173,17 @@ You can also pre-define the options inputed via command prompt by using the foll
 (*) The numbering of the indices is as follows:
 
 ```
-[1] Projection Separability Index (PSI)
-[2] Dunn Index (DN)
+[1] Projection Separability Indices (PSIs)
+[2] Dunn Index (DI)
 [3] Davies-Bouldin Index (DB)
-[4] Bezdek Index (BZ)
+[4] Generalized Dunn Index (GDI)
 [5] Calinski and Harabasz Index (CH)
-[6] Silhouette Index (SH)
-[7] Thornton Separability Index (TH)
+[6] Silhouette Index (SIL)
+[7] Geometric Separability Index (GSI)
 [8] Cluster Validity Density-involved Distance (CVDD)
 ```
 
-Also you can input a range. For instance, 1:3 will calculate the PSI, DN, and DB.
+Also you can input a range. For instance, 1:3 will calculate the PSI, DI, and DB.
 
 (**) Regarding the null model, a value 0 will avoid the application of the null model.
 

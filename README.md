@@ -9,7 +9,7 @@ Here we propose a novel rationale named Projection Separability (PS), which is s
 
 ### Validity indexes
 
-Based on this new rationale, we implemented three statistical separability measures which we called as Projection Separability Indices (PSIs); the first index, PSI-P, evaluates the separability of the points on the projection line by means of the Mann-Whitney U-test p-value (MW p-value), which is a ranking-based statistical test; the second index, PSI-ROC, adopts as separability measure on the projection line the Area Under the ROC-Curve (AUC-ROC), which provides a measure of a trade-off between true positive rate and false-positive rate; and the third index, PSI-PR, which uses instead the Area Under the Precision-Recall Curve (AUC-PR), which gives a measure of a trade-off between precision and sensitivity (a.k.a. recall). Moreover, we have included as well - with the aim of comparison - several commonly used Cluster Validity Indices (CVIs) such as Dunn index (DN), that relies on the distances among clusters and their diameters; Davies-Bouldin index (DB), based on the idea that for a good partition inter-cluster separation as well as intra-cluster homogeneity and compactness should be high; Calinski-Harabasz index (CH), based on the average between-cluster means and within-cluster sum of squares; Silhouette index (SH), that validates the clustering performance based on the pairwise difference of between-cluster and within-cluster distances; Bezdek index (BZ), a variation of the Dunn index; Thornton’s separability (TH) index, which calculates the average number of instances that share the same class label as their nearest neighbors; and Cluster Validity index based on Density-involved Distance (CVDD), a new index based on the density estimation and compactness weights for determining the best grouping of the samples.
+Based on this new rationale, we implemented three statistical separability measures which we called as Projection Separability Indices (PSIs); the first index, PSI-P, evaluates the separability of the points on the projection line by means of the Mann-Whitney U-test p-value (MW p-value), which is a ranking-based statistical test; the second index, PSI-ROC, adopts as separability measure on the projection line the Area Under the ROC-Curve (AUC-ROC), which provides a measure of a trade-off between true positive rate and false-positive rate; and the third index, PSI-PR, which uses instead the Area Under the Precision-Recall Curve (AUC-PR), which gives a measure of a trade-off between precision and sensitivity (a.k.a. recall). Moreover, we have included as well - with the aim of comparison - several commonly used Cluster Validity Indices (CVIs) such as Dunn Index (DI), that relies on the distances among clusters and their diameters; Davies-Bouldin Index (DB), based on the idea that for a good partition inter-cluster separation as well as intra-cluster homogeneity and compactness should be high; Calinski-Harabasz Index (CH), based on the average between-cluster means and within-cluster sum of squares; Silhouette Index (SIL), that validates the clustering performance based on the pairwise difference of between-cluster and within-cluster distances; Generalized Dunn Index (GDI), a variation of the Dunn index; Geometrical Separability Index (GSI) - also known as Thornton’s separability index - which calculates the average number of instances that share the same class label as their nearest neighbors; and Cluster Validity index based on Density-involved Distance (CVDD), a new index based on the density estimation and compactness weights for determining the best grouping of the samples.
 
 ## Execution
 
@@ -39,13 +39,13 @@ At first, the user has to select which indexes should be included as part of the
 
 ```
 Available indices:
-[1] Projection Separability Index (PSI)
-[2] Dunn Index (DN)
+[1] Projection Separability Indices (PSIs)
+[2] Dunn Index (DI)
 [3] Davies-Bouldin Index (DB)
-[4] Bezdek Index (BZ)
+[4] Generalized Dunn Index (GDI)
 [5] Calinski and Harabasz Index (CH)
-[6] Silhouette Index (SH)
-[7] Thornton Separability Index (TH)
+[6] Silhouette Index (SIL)
+[7] Geometric Separability Index (GSI)
 [8] Cluster Validity Density-involved Distance (CVDD)
 # Select your indices (range between 1:8)
 -> 
@@ -72,13 +72,13 @@ For instance, if the main function was executed as:
 ValidityIndicesResults = ProcessValidityIndices(DataMatrix, SampleLabels, PositiveClasses)
 
 Available indices:
-[1] Projection Separability Index (PSI)
-[2] Dunn Index (DN)
+[1] Projection Separability Indices (PSIs)
+[2] Dunn Index (DI)
 [3] Davies-Bouldin Index (DB)
-[4] Bezdek Index (BZ)
+[4] Generalized Dunn Index (GDI)
 [5] Calinski and Harabasz Index (CH)
-[6] Silhouette Index (SH)
-[7] Thornton Separability Index (TH)
+[6] Silhouette Index (SIL)
+[7] Geometric Separability Index (GSI)
 [8] Cluster Validity Density-involved Distance (CVDD)
 # Select your indices (range between 1:8)
 -> 1:8
@@ -131,13 +131,13 @@ For instance, if the main function was executed as:
 NullModelResults = ProcessValidityIndices(DataMatrix, SampleLabels, PositiveClasses)
 
 Available indices:
-[1] Projection Separability Index (PSI)
-[2] Dunn Index (DN)
+[1] Projection Separability Indices (PSIs)
+[2] Dunn Index (DI)
 [3] Davies-Bouldin Index (DB)
-[4] Bezdek Index (BZ)
+[4] Generalized Dunn Index (GDI)
 [5] Calinski and Harabasz Index (CH)
-[6] Silhouette Index (SH)
-[7] Thornton Separability Index (TH)
+[6] Silhouette Index (SIL)
+[7] Geometric Separability Index (GSI)
 [8] Cluster Validity Density-involved Distance (CVDD)
 # Select your indices (range between 1:8)
 -> 1:8
@@ -173,17 +173,17 @@ You can also pre-define the options inputed via command prompt by using the foll
 (*) The numbering of the indices is as follows:
 
 ```
-[1] Projection Separability Index (PSI)
-[2] Dunn Index (DN)
+[1] Projection Separability Indices (PSIs)
+[2] Dunn Index (DI)
 [3] Davies-Bouldin Index (DB)
-[4] Bezdek Index (BZ)
+[4] Generalized Dunn Index (GDI)
 [5] Calinski and Harabasz Index (CH)
-[6] Silhouette Index (SH)
-[7] Thornton Separability Index (TH)
+[6] Silhouette Index (SIL)
+[7] Geometric Separability Index (GSI)
 [8] Cluster Validity Density-involved Distance (CVDD)
 ```
 
-Also you can input a range. For instance, 1:3 will calculate the PSI, DN, and DB.
+Also you can input a range. For instance, 1:3 will calculate the PSI, DI, and DB.
 
 (**) Regarding the null model, a value 0 will avoid the application of the null model.
 

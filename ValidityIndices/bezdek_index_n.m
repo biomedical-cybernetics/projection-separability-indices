@@ -1,7 +1,6 @@
-% Bezdek index
+% Generalized Dunn Index
 %   MAIN REFERENCES:
-%       - J. C. Bezdek, W. Q. Li, Y. Attikiouzel, and M. Windham, “A geometric approach to cluster validity for normal mixtures,” Soft Comput. - A Fusion Found. Methodol. Appl., vol. 1, no. 4, pp. 166–179, 1997.
-%       - B. Stein, S. M. zu Eissen, Gf. WiBbrock, and M. H. Hanza, “On cluster validity and the information need of users,” no. September, pp. 216–221, 2003.
+%       - J. C. Bezdek and N. R. Pal, “Cluster validation with generalized Dunn’s indices,” in Proceedings - 1995 2nd New Zealand International Two-Stream Conference on Artificial Neural Networks and Expert Systems, ANNES 1995, 1995, pp. 190–193, doi: 10.1109/ANNES.1995.499469.
 
 function bez=bezdek_index(a)
 %% how to use the function

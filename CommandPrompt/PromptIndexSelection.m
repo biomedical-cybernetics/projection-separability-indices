@@ -4,13 +4,13 @@ function SelectedIndices = PromptIndexSelection()
 
 	while ~correct
 		fprintf('\nAvailable indices:\n');
-		fprintf('[1] Projection Separability Index (PSI)\n');
-		fprintf('[2] Dunn Index (DN)\n');
+		fprintf('[1] Projection Separability Indices (PSIs)\n');
+		fprintf('[2] Dunn Index (DI)\n');
 		fprintf('[3] Davies-Bouldin Index (DB)\n');
-		fprintf('[4] Bezdek Index (BZ)\n');
+		fprintf('[4] Generalized Dunn Index (GDI)\n');
 		fprintf('[5] Calinski and Harabasz Index (CH)\n');
-		fprintf('[6] Silhouette Index (SH)\n');
-		fprintf('[7] Thornton Separability Index (TH)\n');
+		fprintf('[6] Silhouette Index (SIL)\n');
+		fprintf('[7] Geometric Separability Index (GSI)\n');
 		fprintf('[8] Cluster Validity Density-involved Distance (CVDD)\n');
 		fprintf('# Select your indices (range between 1:7)\n');
 		SelectedIndices = input('-> ');

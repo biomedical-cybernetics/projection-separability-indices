@@ -2,9 +2,9 @@
 %   MAIN REFERENCE:
 %       - J. C. Dunn, “A fuzzy relative of the ISODATA process and its use in detecting compact well-separated clusters,” J. Cybern., vol. 3, no. 3, pp. 32–57, 1973.
 
-function DI=dunn_index(data,labels,distance)   
+function DI = DunnIndex(data,labels,distance)   
 %%%Dunn's index for clustering compactness and separation measurement
-% dunn_index(data,labels,distance)
+% DunnIndex(data,labels,distance)
 % data = data matrix [n X d] 
 % labels = [n X 1] vector of data labels
 % distance  =   string that is passed to pdist to calculate distance between
@@ -71,4 +71,3 @@ dem=neg_obs.*distM;
 dem=max(max(dem));
 
 DI=num/dem;
-end

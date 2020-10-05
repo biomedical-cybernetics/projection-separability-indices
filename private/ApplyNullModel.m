@@ -1,4 +1,4 @@
-function NullModel = GenerateNullModel(NumberOfIterations, SelectedIndices, ProcessData, IndicesValues)
+function NullModel = ApplyNullModel(NumberOfIterations, SelectedIndices, ProcessData, IndicesValues)
     NumberOfSampleLabels = numel(ProcessData.SampleLabels);
     randGenerator = parallel.pool.Constant(RandStream.getGlobalStream());
     
@@ -21,7 +21,7 @@ function NullModel = GenerateNullModel(NumberOfIterations, SelectedIndices, Proc
 
         ProcessFields{ix} = PermutedData;
         
-        ModelResults(ix) = GenerateIndicesValues(SelectedIndices, ProcessFields{ix});
+        ModelResults(ix) = ApplyValidityIndices(SelectedIndices, ProcessFields{ix});
     end
 
     IndicesNames = GenerateIndicesNames(SelectedIndices); 

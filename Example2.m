@@ -1,7 +1,5 @@
-% This example...
-
 % Loading test data
-load(strcat(pwd, "/Examples/tripartiteswissroll.mat"));
+load(strcat(pwd, "/sample-data/tripartiteswissroll.mat"));
 
 % Processing validity indexes
 % Note: nullmodel 100 means that a null model with 100 iterations will be applied

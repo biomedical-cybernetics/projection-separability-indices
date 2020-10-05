@@ -2,8 +2,8 @@
 %   MAIN REFERENCE:
 %       - T. Calinski and J. Harabasz, “A dendrite method for cluster analysis,” Commun. Stat., vol. 3, no. 1, pp. 1–27, 1974.
 
-function [chK] = cal_har_k_index(X,cinds)
-% CAL_HAR_K_INDEX - Implements the Calinski and Harabasz cluster index for various clusterings
+function [chK] = CalinskiHarabaszIndex(X,cinds)
+% Implements the Calinski and Harabasz cluster index for various clusterings
 % 
 % Inputs: 
 % 

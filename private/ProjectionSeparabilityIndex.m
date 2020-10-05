@@ -9,7 +9,8 @@ function [psiPvalue, psiAUC, psiAUPR, psiMCC, dataClustered, sortedLabels] = Pro
 	%		- psiPvalue: Mean of Mann-Whitney p-values (type: numeric/double)
 	%		- psiAUC: Mean of Area Under the ROC Curve (AUC) values (type: numeric/double)
 	%		- psiAUPR: Mean of Area Under the Precision-Recall Curve (AUPR) values (type: numeric/double)
-	%		- dataClustered: Created clusters by dividing the sample labels (type: cell array)
+	%		- psiMCC: Mean of Matthews Correlation Coefficient (MCC) values (type: numeric/double)
+	%		- dataClustered: Created clusters by dividing the sample labels in groups (type: cell array)
 	%		- sortedLabels: List of sample labels sorted by cluster (type: cell array)
 	
 	if nargin < 4

@@ -1,3 +1,7 @@
+% Cluster Validity index based on Density-involved Distance
+%   MAIN REFERENCE:
+%       - L. Hu and C. Zhong, “An internal validity index based on density-involved distance,” IEEE Access, vol. 7, pp. 40038–40051, 2019, doi: 10.1109/ACCESS.2019.2906949.
+
 function cvddindex = CVDDIndex(X, piX)
 d = pdist2(X,X,'minkowski',2); %Euclidean distance of X
 try

@@ -1,3 +1,2 @@
 function Logger(enable, msg)
-    if (enable) disp(msg); end
-end
+if (enable) disp(msg); end

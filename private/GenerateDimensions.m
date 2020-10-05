@@ -1,3 +1,2 @@
 function NumberOfDimensions = GenerateDimensions(DataMatrix)
-    NumberOfDimensions = size(DataMatrix, 2);
-end
+NumberOfDimensions = size(DataMatrix, 2);

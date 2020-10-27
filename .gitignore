@@ -231,3 +231,6 @@ $RECYCLE.BIN/
 
 # Custom
 data/
+*.log
+*.txt
+*.exe

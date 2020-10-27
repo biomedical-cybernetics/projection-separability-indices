@@ -1,8 +1,5 @@
-% This example...
-
-
 % Loading test data
-load(strcat(pwd, "/Examples/applestem.mat"));
+load(strcat(pwd, "/sample-data/applestem.mat"));
 
 % Processing validity indices
 % Note: nullmodel 0 means that no null model will be applied

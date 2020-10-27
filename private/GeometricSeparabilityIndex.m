@@ -12,16 +12,15 @@
 % label is shared by its nearest neighbour (determined
 % on the basis of simple Euclidean distance)
 
-function TH = thornton(x, labels, nameLabels, numbLabels)
-	% thornton
-	%   REFERENCE:
-	%       - Released under MIT License
+function GSI = GeometricSeparabilityIndex(x, labels, nameLabels, numbLabels)
+% GeometricSeparabilityIndex
+%   REFERENCE:
+%       - Released under MIT License
 
-    x = x + 1e-3*randn(size(x));
-    p = length(labels);
-    d2 = pdist2(x,x);
-    [S, I] = sort(d2);
-    t1 = labels(I(1,:));
-    t2 = labels(I(2,:));
-    TH = sum(strcmp(t1,t2))/p;
-end
+x = x + 1e-3*randn(size(x));
+p = length(labels);
+d2 = pdist2(x,x);
+[S, I] = sort(d2);
+t1 = labels(I(1,:));
+t2 = labels(I(2,:));
+GSI = sum(strcmp(t1,t2))/p;

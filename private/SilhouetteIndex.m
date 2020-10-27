@@ -2,9 +2,9 @@
 %   MAIN REFERENCE:
 %       - P. J. Rousseeuw, "Silhouettes: A graphical aid to the interpretation and validation of cluster analysis," J. Comput. Appl. Math., vol. 20, pp. 53–65, Nov. 1987.
 
-function [ Gs ] = silhouetteIndex(id , data , nClusters)
+function [ Gs ] = SilhouetteIndex(id , data , nClusters)
 % Summary Calculates the global silhouette value for a clustering algorithm
-% USAGE [GS] = silhouetteIndex(Idx , data) 
+% USAGE [GS] = SilhouetteIndex(Idx , data) 
 % Reference : Color Segmentation Using Improved MountainClustering
 % Technique Version-2 Nk Verma
 
@@ -30,5 +30,3 @@ Sm = Sm./Nm;
 
 % Calculating Gs
 Gs = sum(Sm)/nClusters;
-
-end

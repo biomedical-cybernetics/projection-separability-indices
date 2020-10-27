@@ -101,10 +101,10 @@ for l=1:nchoosek(numberUniqueLabels, 2) % number of sample labels combinations
 	end
 end
 
-psiPvalue = mean([mannWhitneyValues{:}]);
-psiAUC = mean([aucValues{:}]);
-psiAUPR = mean([auprValues{:}]);
-psiMCC = mean([mccValues{:}]);
+psiPvalue = mean([mannWhitneyValues{:}]) / (1 + std([mannWhitneyValues{:}]));
+psiAUC = mean([aucValues{:}]) / (1 + std([aucValues{:}]));
+psiAUPR = mean([auprValues{:}]) / (1 + std([auprValues{:}]));
+psiMCC = mean([mccValues{:}]) / (1 + std([mccValues{:}]));
 
 %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 % Sub-functions

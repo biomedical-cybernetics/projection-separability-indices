@@ -17,7 +17,6 @@ function GSI = GeometricSeparabilityIndex(x, labels, nameLabels, numbLabels)
 %   REFERENCE:
 %       - Released under MIT License
 
-x = x + 1e-3*randn(size(x));
 p = length(labels);
 d2 = pdist2(x,x);
 [S, I] = sort(d2);

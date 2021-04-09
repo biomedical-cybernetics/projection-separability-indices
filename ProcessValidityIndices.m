@@ -47,7 +47,7 @@ if ~isempty(varargin)
 	option = find(strcmp(varargin, 'indices'));
 	if ~isempty(option)
 		if ~isa(varargin{option+1}, 'double')
-			error('The value of the option indices must be numeric (e.g. 1) or a range (e.g. 1:7)');
+			error('The value of the option indices must be numeric (e.g. 1) or a range (e.g. 1:8)');
 		end
 		preSelectedIndices = varargin{option+1};
 	end

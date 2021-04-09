@@ -14,7 +14,7 @@ function [psiPvalue, psiAUC, psiAUPR, psiMCC, dataClustered, sortedLabels] = Pro
 %		- sortedLabels: List of sample labels sorted by cluster (type: cell array)
 
 if nargin < 4
-	error('not enough input arguments')
+	error('Not enough input arguments')
 end
 
 % obtaining unique sample labels
@@ -40,7 +40,7 @@ end
 n = 1;
 m = 2;
 if ~strcmp(centerFormula,'mean') && ~strcmp(centerFormula,'median') && ~strcmp(centerFormula,'mode')
-	warning('your center formula is not valid; median will be applied')
+	warning('your center formula is not valid: median will be applied')
 	centerFormula = 'median';
 end
 for l=1:nchoosek(numberUniqueLabels, 2) % number of sample labels combinations
@@ -55,10 +55,10 @@ for l=1:nchoosek(numberUniqueLabels, 2) % number of sample labels combinations
 			centroidCluster1 = modeDistribution(dataClustered{n}(:,dimsRange));
 			centroidCluster2 = modeDistribution(dataClustered{m}(:,dimsRange));
 		otherwise
-			error('you must select either mean, median or mode in order to calculate the centroids');
+			error('You must select either mean, median, or mode to calculate the centroids');
 	end
 	if centroidCluster1 == centroidCluster2
-		error('impossible to continue because clusters have the same centroid; no line can be traced between them');
+		error('Impossible to continue because clusters have the same centroid: no line can be traced between them');
 	end
 
 	clustersLine = createLineBetweenCentroids(centroidCluster1,centroidCluster2);

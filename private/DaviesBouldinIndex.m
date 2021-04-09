@@ -7,42 +7,42 @@ function [t,r] = DaviesBouldinIndex(D, cl, C, p, q)
 %
 % [t,r] = DaviesBouldinIndex(D, cl, C, p, q)
 %
-%  Input and output arguments ([]'s are optional):  
+%  Input and output arguments ([]'s are optional):
 %    D     (matrix) data (n x dim)
 %          (struct) map or data struct
 %    cl    (vector) cluster numbers corresponding to data samples (n x 1)
 %    [C]   (matrix) prototype vectors (c x dim) (default = cluster means)
 %    [p]   (scalar) norm used in the computation (default == 2)
 %    [q]   (scalar) moment used to calculate cluster dispersions (default = 2)
-% 
+%
 %    t     (scalar) Davies-Bouldin index for the clustering (=mean(r))
-%    r     (vector) maximum DB index for each cluster (size c x 1)    
-% 
+%    r     (vector) maximum DB index for each cluster (size c x 1)
+%
 % See also  KMEANS, KMEANS_CLUSTERS, SOM_GAPINDEX.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% input arguments
 
-if isstruct(D), 
+if isstruct(D),
     switch D.type,
-    case 'som_map', D = D.codebook; 
-    case 'som_data', D = D.data; 
+    case 'som_map', D = D.codebook;
+    case 'som_data', D = D.data;
     end
 end
 
 % cluster centroids
 [l dim] = size(D);
-u = unique(cl); 
-c = length(u); 
-if nargin <3, 
-  C = zeros(c,dim); 
-  for i=1:c, 
+u = unique(cl);
+c = length(u);
+if nargin <3,
+  C = zeros(c,dim);
+  for i=1:c,
       me = nanstats(D(find(cl==u(i)),:));
       C(i,:) = me';
-  end 
+  end
 end
 
-u2i = zeros(max(u),1); u2i(u) = 1:c; 
+u2i = zeros(max(u),1); u2i(u) = 1:c;
 D = som_fillnans(D,C,u2i(cl)); % replace NaN's with cluster centroid values
 
 if nargin <4, p = 2; end % euclidian distance between cluster centers
@@ -51,7 +51,7 @@ if nargin <5, q = 2; end % dispersion = standard deviation
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% action
 
-% dispersion in each cluster 
+% dispersion in each cluster
 for i = 1:c
   ind = find(cl==u(i)); % points in this cluster
   l   = length(ind);
@@ -68,7 +68,7 @@ end
 %    M(i,j) = sum(abs(C(i,:) - C(j,:)).^p)^(1/p);
 %  end
 %end
-M = som_mdist(C,p); 
+M = som_mdist(C,p);
 
 % Davies-Bouldin index
 R = NaN * zeros(c);
@@ -90,7 +90,7 @@ function [me, st, md, no] = nanstats(D)
 %
 % [mean, std, median, nans] = nanstats(D)
 %
-%  Input and output arguments: 
+%  Input and output arguments:
 %   D   (struct) data or map struct
 %       (matrix) size dlen x dim
 %
@@ -110,7 +110,7 @@ function [me, st, md, no] = nanstats(D)
 %(nargchk(1, 1, nargin));  % check no. of input args is correct
 (narginchk(1, nargin));  % check no. of input args is correct
 
-if isstruct(D), 
+if isstruct(D),
   if strcmp(D.type,'som_map'), D = D.codebook;
   else D = D.data;
   end
@@ -131,17 +131,17 @@ for i = 1:dim,
   me(i) = sum(D(ind, i)); % compute average
   if n == 0, me(i) = NaN; else me(i) = me(i) / n; end
 
-  if nargout>1, 
+  if nargout>1,
     md(i) = median(D(ind, i)); % compute median
 
-    if nargout>2, 
+    if nargout>2,
       st(i) = sum((me(i) - D(ind, i)).^2); % compute standard deviation
       if n == 0,     st(i) = NaN;
       elseif n == 1, st(i) = 0;
       else st(i) = sqrt(st(i) / (n - 1));
       end
 
-      if nargout>3, 
+      if nargout>3,
         no(i) = n; % number of samples (finite, not-NaN)
       end
     end
@@ -177,13 +177,13 @@ else
 end
 
 if nargin<3,
-  bmus = som_bmus(sM,sD);   
+  bmus = som_bmus(sM,sD);
 end
 
 if isstruct(sM) & strcmp(sM.type,'som_map'),
   sM = sM.codebook(bmus,:);
 elseif isstruct(sM),
-  sM = sM.data(bmus,:);   
+  sM = sM.data(bmus,:);
 else
   sM = sM(bmus,:);
 end
@@ -274,10 +274,10 @@ for i=1:l-1,
   C=D(j,:)-D(i*o(1:length(j)),:);
   switch q,
   case 1,    Md(j,i)=abs(C)*m;
-  case 2,    Md(j,i)=sqrt((C.^2)*m); 
+  case 2,    Md(j,i)=sqrt((C.^2)*m);
   case Inf,  Md(j,i)=max(diag(m)*abs(C),[],2);
   otherwise, Md(j,i)=((abs(C).^q)*m).^(1/q);
-  end   
+  end
   Md(i,j) = Md(j,i)';
 end
 

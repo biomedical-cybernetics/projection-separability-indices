@@ -1,4 +1,4 @@
-function [psiPvalue, psiAUC, psiAUPR, psiMCC, dataClustered, sortedLabels] = ProjectionSeparabilityIndex(dataMatrix, sampleLabels, positiveClasses, centerFormula)
+function [psiP, psiROC, psiPR, psiMCC, dataClustered, sortedLabels] = ProjectionSeparabilityIndex(dataMatrix, sampleLabels, positiveClasses, centerFormula)
 % ProjectionSeparabilityIndex
 %   INPUT Values:
 %		- dataMatrix: Data values (type: numeric/double matrix)
@@ -6,9 +6,9 @@ function [psiPvalue, psiAUC, psiAUPR, psiMCC, dataClustered, sortedLabels] = Pro
 %		- positiveClasses: List of positive sample labels (type: cell array)
 %		- centerFormula: chosen formula for calculating the centroids (type: char array)
 %   OUTPUT Values:
-%		- psiPvalue: Mean of Mann-Whitney p-values (type: numeric/double)
-%		- psiAUC: Mean of Area Under the ROC Curve (AUC) values (type: numeric/double)
-%		- psiAUPR: Mean of Area Under the Precision-Recall Curve (AUPR) values (type: numeric/double)
+%		- psiP: Mean of Mann-Whitney p-values (type: numeric/double)
+%		- psiROC: Mean of Area Under the ROC Curve (AUC) values (type: numeric/double)
+%		- psiPR: Mean of Area Under the Precision-Recall Curve (AUPR) values (type: numeric/double)
 %		- psiMCC: Mean of Matthews Correlation Coefficient (MCC) values (type: numeric/double)
 %		- dataClustered: Created clusters by dividing the sample labels in groups (type: cell array)
 %		- sortedLabels: List of sample labels sorted by cluster (type: cell array)
@@ -108,11 +108,11 @@ allAUCPRvalues = [auprValues{:}];
 allMCCvalues = [mccValues{:}];
 
 % Corrected PSI-P value
-psiPvalue = (mean(allMWPvalues) + std(allMWPvalues)) / (1 + std(allMWPvalues));
+psiP = (mean(allMWPvalues) + std(allMWPvalues)) / (1 + std(allMWPvalues));
 % Corrected PSI-ROC value
-psiAUC = mean(allAUCROCvalues) / (1 + std(allAUCROCvalues));
+psiROC = mean(allAUCROCvalues) / (1 + std(allAUCROCvalues));
 % Corrected PSI-PR value
-psiAUPR = mean(allAUCPRvalues) / (1 + std(allAUCPRvalues));
+psiPR = mean(allAUCPRvalues) / (1 + std(allAUCPRvalues));
 % Corrected PSI-MCC value
 psiMCC = mean(allMCCvalues) / (1 + std(allMCCvalues));
 

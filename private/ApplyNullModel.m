@@ -15,7 +15,7 @@ parfor ix=1:NumberOfIterations
     PermutedData.PositiveClasses = ProcessData.PositiveClasses;
     PermutedData.UniqueSampleLabels = ProcessData.UniqueSampleLabels;
     PermutedData.LenUniqueLabels = ProcessData.LenUniqueLabels;
-    PermutedData.NumericSampleLabels = GenerateNumericLabels(PermutedData.SampleLabels, PermutedData.UniqueSampleLabels, PermutedData.LenUniqueLabels);
+    PermutedData.NumericSampleLabels = ProcessData.NumericSampleLabels(idxs);
     PermutedData.GeneratedClusters = GenerateClusters(PermutedData.DataMatrix, PermutedData.SampleLabels, PermutedData.UniqueSampleLabels, PermutedData.LenUniqueLabels);
     PermutedData.Dimensions = ProcessData.Dimensions;
 

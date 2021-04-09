@@ -76,7 +76,7 @@ OriginData.SampleLabels = SampleLabels;
 OriginData.PositiveClasses = PositiveClasses;
 OriginData.UniqueSampleLabels = unique(SampleLabels);
 OriginData.LenUniqueLabels = length(OriginData.UniqueSampleLabels);
-OriginData.NumericSampleLabels = GenerateNumericLabels(OriginData.SampleLabels, OriginData.UniqueSampleLabels, OriginData.LenUniqueLabels);
+OriginData.NumericSampleLabels = findgroups(OriginData.SampleLabels);
 OriginData.GeneratedClusters = GenerateClusters(OriginData.DataMatrix, OriginData.SampleLabels, OriginData.UniqueSampleLabels, OriginData.LenUniqueLabels);
 OriginData.Dimensions = GenerateDimensions(OriginData.DataMatrix);
 

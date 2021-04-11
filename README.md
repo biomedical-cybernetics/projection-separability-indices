@@ -33,7 +33,7 @@ The definition of the inputs is as follows:
 
 _(*) For instance, a matrix of NxM results from a dimension reduction method such as Principal Component Analysis (PCA)._
 
-_(**) Depending on the study, positive classes are usually ranked as the labels for which a particular prediction is desired. For example, sick patients (positive class) versus controls (negative class); or burnout (positive class), depression (positive class), versus control (negative class). If you are not sure which are your positive classes, then take the groups with the lower number of samples as positive._
+_(**) Depending on the study, positive classes are usually ranked as the labels for which a particular prediction is desired. For example, sick patients (positive class) versus controls (negative class); or burnout (positive class), depression (positive class), versus control (negative class). If you are not sure which are your positive classes, then take the groups with the lower number of samples as positive (to avoid issues due to unbalanced groups)._
 
 At first, the user has to select which indexes should be included as part of the output:
 

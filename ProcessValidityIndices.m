@@ -13,7 +13,7 @@ function ValidityIndices = ProcessValidityIndices(DataMatrix, SampleLabels, Posi
 %		- Struct: IndexName.IndexValue (the number of indices varies according to user preferences)
 %			-> Example: results = ProcessValidityIndices(MyMatrix, MySamples, MyPositiveClasses);
 %			-> results.psip (access to PSI-P index value)
-%		
+%
 %		Applying a Null Model:
 %		- Struct: IndexName.NullModelStruct
 %			* NullModelStruct:
@@ -30,11 +30,11 @@ function ValidityIndices = ProcessValidityIndices(DataMatrix, SampleLabels, Posi
 logger = true;
 
 % Checking extra parameters
-if ~isempty(varargin) 
+if ~isempty(varargin)
 	if mod(length(varargin), 2) ~= 0
 		error('Extra parameters must be in a key value format');
 	end
-	
+
 	option = find(strcmp(varargin, 'seed'));
 	if ~isempty(option)
 		if ~isa(varargin{option+1}, 'double')
@@ -43,11 +43,11 @@ if ~isempty(varargin)
 		seed = RandStream.create('mrg32k3a', 'seed', varargin{option+1});
 		RandStream.setGlobalStream(seed);
 	end
-	
+
 	option = find(strcmp(varargin, 'indices'));
 	if ~isempty(option)
 		if ~isa(varargin{option+1}, 'double')
-			error('The value of the option indices must be numeric (e.g. 1) or a range (e.g. 1:7)');
+			error('The value of the option indices must be numeric (e.g. 1) or a range (e.g. 1:8)');
 		end
 		preSelectedIndices = varargin{option+1};
 	end
@@ -76,7 +76,7 @@ OriginData.SampleLabels = SampleLabels;
 OriginData.PositiveClasses = PositiveClasses;
 OriginData.UniqueSampleLabels = unique(SampleLabels);
 OriginData.LenUniqueLabels = length(OriginData.UniqueSampleLabels);
-OriginData.NumericSampleLabels = GenerateNumericLabels(OriginData.SampleLabels, OriginData.UniqueSampleLabels, OriginData.LenUniqueLabels);
+OriginData.NumericSampleLabels = findgroups(OriginData.SampleLabels);
 OriginData.GeneratedClusters = GenerateClusters(OriginData.DataMatrix, OriginData.SampleLabels, OriginData.UniqueSampleLabels, OriginData.LenUniqueLabels);
 OriginData.Dimensions = GenerateDimensions(OriginData.DataMatrix);
 
@@ -103,7 +103,7 @@ if NullModel
 else
 	%% Processing validity indices
 	Logger(logger, 'Processing validity indices...');
-	ValidityIndices = ApplyValidityIndices(SelectedIndices, OriginData);	
+	ValidityIndices = ApplyValidityIndices(SelectedIndices, OriginData);
 end
 
 Logger(logger, 'Done.');

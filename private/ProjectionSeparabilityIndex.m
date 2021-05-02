@@ -1,4 +1,4 @@
-function [psiPvalue, psiAUC, psiAUPR, psiMCC, dataClustered, sortedLabels] = ProjectionSeparabilityIndex(dataMatrix, sampleLabels, positiveClasses, centerFormula)
+function [psiP, psiROC, psiPR, psiMCC, dataClustered, sortedLabels] = ProjectionSeparabilityIndex(dataMatrix, sampleLabels, positiveClasses, centerFormula)
 % ProjectionSeparabilityIndex
 %   INPUT Values:
 %		- dataMatrix: Data values (type: numeric/double matrix)
@@ -6,15 +6,15 @@ function [psiPvalue, psiAUC, psiAUPR, psiMCC, dataClustered, sortedLabels] = Pro
 %		- positiveClasses: List of positive sample labels (type: cell array)
 %		- centerFormula: chosen formula for calculating the centroids (type: char array)
 %   OUTPUT Values:
-%		- psiPvalue: Mean of Mann-Whitney p-values (type: numeric/double)
-%		- psiAUC: Mean of Area Under the ROC Curve (AUC) values (type: numeric/double)
-%		- psiAUPR: Mean of Area Under the Precision-Recall Curve (AUPR) values (type: numeric/double)
+%		- psiP: Mean of Mann-Whitney p-values (type: numeric/double)
+%		- psiROC: Mean of Area Under the ROC Curve (AUC) values (type: numeric/double)
+%		- psiPR: Mean of Area Under the Precision-Recall Curve (AUPR) values (type: numeric/double)
 %		- psiMCC: Mean of Matthews Correlation Coefficient (MCC) values (type: numeric/double)
 %		- dataClustered: Created clusters by dividing the sample labels in groups (type: cell array)
 %		- sortedLabels: List of sample labels sorted by cluster (type: cell array)
 
 if nargin < 4
-	error('not enough input arguments')
+	error('Not enough input arguments')
 end
 
 % obtaining unique sample labels
@@ -40,25 +40,25 @@ end
 n = 1;
 m = 2;
 if ~strcmp(centerFormula,'mean') && ~strcmp(centerFormula,'median') && ~strcmp(centerFormula,'mode')
-	warning('your center formula is not valid; median will be applied')
+	warning('your center formula is not valid: median will be applied')
 	centerFormula = 'median';
 end
 for l=1:nchoosek(numberUniqueLabels, 2) % number of sample labels combinations
 	switch centerFormula
 		case 'mean'
-			centroidCluster1 = mean(dataClustered{n}(:,dimsRange),1); 
+			centroidCluster1 = mean(dataClustered{n}(:,dimsRange),1);
 			centroidCluster2 = mean(dataClustered{m}(:,dimsRange),1);
 		case 'median'
-			centroidCluster1 = median(dataClustered{n}(:,dimsRange),1); 
+			centroidCluster1 = median(dataClustered{n}(:,dimsRange),1);
 			centroidCluster2 = median(dataClustered{m}(:,dimsRange),1);
 		case 'mode'
-			centroidCluster1 = modeDistribution(dataClustered{n}(:,dimsRange)); 
+			centroidCluster1 = modeDistribution(dataClustered{n}(:,dimsRange));
 			centroidCluster2 = modeDistribution(dataClustered{m}(:,dimsRange));
 		otherwise
-			error('you must select either mean, median or mode in order to calculate the centroids');
+			error('You must select either mean, median, or mode to calculate the centroids');
 	end
 	if centroidCluster1 == centroidCluster2
-		error('impossible to continue because clusters have the same centroid; no line can be traced between them');
+		error('Impossible to continue because clusters have the same centroid: no line can be traced between them');
 	end
 
 	clustersLine = createLineBetweenCentroids(centroidCluster1,centroidCluster2);
@@ -79,7 +79,7 @@ for l=1:nchoosek(numberUniqueLabels, 2) % number of sample labels combinations
 
 	% sample membership
 	sampleLabelsMembership = [sampleLabels(ismember(sampleLabels,uniqueLabels{n}));sampleLabels(ismember(sampleLabels,uniqueLabels{m}))];
-	
+
 	% selecting the possitive class
 	for o=1:length(positiveClasses)
 		if any(ismember(sampleLabelsMembership,positiveClasses{o}))
@@ -90,7 +90,7 @@ for l=1:nchoosek(numberUniqueLabels, 2) % number of sample labels combinations
 
 	%% AUC & AUPR
 	[aucValues{l},auprValues{l}] = computeAUCAUPR(sampleLabelsMembership,[clustersProjection1D(1:sizeClusterN);clustersProjection1D(sizeClusterN+1:sizeClusterN+sizeClusterM)],currentPositiveClass);
-	
+
 	%% MCC
 	mccValues{l} = computeMCC(sampleLabelsMembership,[clustersProjection1D(1:sizeClusterN);clustersProjection1D(sizeClusterN+1:sizeClusterN+sizeClusterM)],currentPositiveClass);
 
@@ -101,10 +101,20 @@ for l=1:nchoosek(numberUniqueLabels, 2) % number of sample labels combinations
 	end
 end
 
-psiPvalue = mean([mannWhitneyValues{:}]) / (1 + std([mannWhitneyValues{:}]));
-psiAUC = mean([aucValues{:}]) / (1 + std([aucValues{:}]));
-psiAUPR = mean([auprValues{:}]) / (1 + std([auprValues{:}]));
-psiMCC = mean([mccValues{:}]) / (1 + std([mccValues{:}]));
+% compile all values from the different groups' combinations
+allMWPvalues = [mannWhitneyValues{:}];
+allAUCROCvalues = [aucValues{:}];
+allAUCPRvalues = [auprValues{:}];
+allMCCvalues = [mccValues{:}];
+
+% Corrected PSI-P value
+psiP = (mean(allMWPvalues) + std(allMWPvalues)) / (1 + std(allMWPvalues));
+% Corrected PSI-ROC value
+psiROC = mean(allAUCROCvalues) / (1 + std(allAUCROCvalues));
+% Corrected PSI-PR value
+psiPR = mean(allAUCPRvalues) / (1 + std(allAUCPRvalues));
+% Corrected PSI-MCC value
+psiMCC = mean(allMCCvalues) / (1 + std(allMCCvalues));
 
 %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 % Sub-functions
@@ -170,7 +180,7 @@ for in=1:2
 		case 2
 			predictedLabels = [repmat(negativeClass,totalNegative,1);repmat({positiveClass},totalPositive,1)];
 	end
-	
+
 	% clasifiers
 	TP = sum(ismember(predictedLabels, positiveClass) & ismember(trueLabels, positiveClass));
 	TN = sum(ismember(predictedLabels, negativeClass) & ismember(trueLabels, negativeClass));
@@ -197,7 +207,7 @@ else
 	aupr = auprEvaluation(labels, scores, positiveClass);
 end
 
-function aupr = auprEvaluation(labels, scores, positiveClass) 
+function aupr = auprEvaluation(labels, scores, positiveClass)
 [rec,prec,~,~] = perfcurve(labels, scores, positiveClass, 'xCrit', 'reca', 'yCrit', 'prec');
 % rec is the recall, prec is the precision.
 % the first value of rec (at recall 0) is NaN (by definition, PRECISION = TP / (FP + TP))

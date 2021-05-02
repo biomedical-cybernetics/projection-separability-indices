@@ -21,6 +21,6 @@ for mi=1:length(SelectedIndices)
 		case 8
 			indices.CVDD = CVDDIndex(ProcessData.DataMatrix, ProcessData.NumericSampleLabels);
 		otherwise
-			error('Undefined; this index is not available');
+			error('Undefined: index %s is not available', CurrentIndex);
 	end
 end

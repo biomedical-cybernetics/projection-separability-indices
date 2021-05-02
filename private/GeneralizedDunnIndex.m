@@ -6,7 +6,7 @@ function GDI = GeneralizedDunnIndex(a)
 %% how to use the function
 % for example considering 4 clusters
 % If each cluster is codified as a matrix where
-% each row is a sample and each feature is a column 
+% each row is a sample and each feature is a column
 % you have 4 matrices that could have different size in the
 % row (samples in the cluster) but same size in the column (number of
 % features). If you give the following name to the four matrix:
@@ -26,7 +26,7 @@ end
 
 denominatore=0;
 for i=1:length(a)
-    denominatore=max([denominatore, 2*den([a{i}])]); 
+    denominatore=max([denominatore, 2*den([a{i}])]);
 end
 
 if (numeratore>0)
@@ -35,7 +35,7 @@ if (numeratore>0)
 else
     GDI = 0;
 end
-    
+
 %% support functions
 function num=num(sf1,sf2)
 n1=size(sf1,1);

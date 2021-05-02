@@ -8,23 +8,23 @@ parfor ix=1:NumberOfIterations
         stream.Substream = ix;
     end
     idxs = randperm(stream, NumberOfSampleLabels);
-    
+
     PermutedData = struct;
     PermutedData.DataMatrix = ProcessData.DataMatrix;
     PermutedData.SampleLabels = ProcessData.SampleLabels(idxs);
     PermutedData.PositiveClasses = ProcessData.PositiveClasses;
     PermutedData.UniqueSampleLabels = ProcessData.UniqueSampleLabels;
     PermutedData.LenUniqueLabels = ProcessData.LenUniqueLabels;
-    PermutedData.NumericSampleLabels = GenerateNumericLabels(PermutedData.SampleLabels, PermutedData.UniqueSampleLabels, PermutedData.LenUniqueLabels);
+    PermutedData.NumericSampleLabels = ProcessData.NumericSampleLabels(idxs);
     PermutedData.GeneratedClusters = GenerateClusters(PermutedData.DataMatrix, PermutedData.SampleLabels, PermutedData.UniqueSampleLabels, PermutedData.LenUniqueLabels);
     PermutedData.Dimensions = ProcessData.Dimensions;
 
     ProcessFields{ix} = PermutedData;
-    
+
     ModelResults(ix) = ApplyValidityIndices(SelectedIndices, ProcessFields{ix});
 end
 
-IndicesNames = GenerateIndicesNames(SelectedIndices); 
+IndicesNames = GenerateIndicesNames(SelectedIndices);
 
 for ix=1:length(IndicesNames)
     IndexName = IndicesNames{ix};

@@ -27,14 +27,14 @@ function CVDD = CVDD(piX,d,DD)
 %results: the CVDD index of pi
 % -------------------------------------------------------------------------
 % Written by Lianyu Hu
-% Department of Computer Science, Ningbo University 
+% Department of Computer Science, Ningbo University
 % February 2019
 
 %% initialization
 NC = length(unique(piX));
 sc_list = zeros(NC,1); %separation
 com_list = zeros(NC,1);%compactness
-%% 
+%%
 for i = 1: NC
     a = find(piX == i);
     b = piX ~= i;
@@ -56,7 +56,7 @@ for i = 1: NC
         com_list(i,1) = max(com_list);
     end
 end
-%% compute the validity index CVDD 
+%% compute the validity index CVDD
 sep = sum(sc_list);
 com = sum(com_list);
 CVDD = sep/com;
@@ -71,13 +71,13 @@ function  DD = Density_involved_distance(d, K)
 % -------------------------------------------------------------------------
 %Input:
 %d: the Euclidean distance between objects in X
-%K: the number of neighborhoods 
+%K: the number of neighborhoods
 % -------------------------------------------------------------------------
 %Output:
 %results: the DD of d
 % -------------------------------------------------------------------------
 % Written by Lianyu Hu
-% Department of Computer Science, Ningbo University 
+% Department of Computer Science, Ningbo University
 % August 2018
 
 %% compute density-involved distance
@@ -100,22 +100,22 @@ tmp2 = sqrt(repmat(fDen,1,N).*repmat(fDen',N,1));
 DD = conD.*tmp2; %density-involved distance
 
 function [KNNG] = KNearestNeighborGraph(dist,K)
-% KNearestNeighborGraph - Computes the K Nearest Neighbor graph 
+% KNearestNeighborGraph - Computes the K Nearest Neighbor graph
 %
-% Computes the K Nearest Neighbor Graph  (KNNG) of a set of points 
+% Computes the K Nearest Neighbor Graph  (KNNG) of a set of points
 % KNNG is a DIRECTED graph
 %
 % CALL:
 % [KNNG]=KNearestNeighborGraph(dist,K)
-% 
+%
 % INPUT:
 % dist: NxN Euclidean distance matrix between each pair of points
 %               dist(i,k)=norm(data(i,:)-data(k,:), (dist(k,k)=0)
-%              
+%
 % OUPUT:
 % KNNG: N cells KNNG{i}=[a b...f] set of index in data rows of the KNNG
 % neighbors of i
-% 
+%
 % Author   : Michael Aupetit
 %            Qatar Computing Research Institute (QCRI)
 %            Hamad Bin Khalifa University (HBKU)
@@ -150,7 +150,7 @@ Degrees = zeros(N, 1);
 Connections = zeros(N);
 for i = 1: N - 1
     Degrees(Pairs(i,1)) = Degrees(Pairs(i,1)) + 1;
-    Degrees(Pairs(i,2)) = Degrees(Pairs(i,2)) + 1;        
+    Degrees(Pairs(i,2)) = Degrees(Pairs(i,2)) + 1;
     Connections(Pairs(i,1), Degrees(Pairs(i,1))) = Pairs(i,2);
     Connections(Pairs(i,2), Degrees(Pairs(i,2))) = Pairs(i,1);
 end
@@ -159,7 +159,7 @@ for i = 1: N
     if Degrees(i) == 1  % first node with one edge
         break;
     end;
-end;    
+end;
 
 CloseT = zeros(N,1);
 OpenT = zeros(N,1);
@@ -177,19 +177,19 @@ while cursor_C < N
     Nodes = Nodes1(Visited(Nodes1)==0);
 
     for i = 1: length(Nodes)
-        % Nodes to Close table 
+        % Nodes to Close table
         for j = 1: cursor_C
             PathbasedW(CloseT(j), Nodes(i)) = max(PathbasedW(CloseT(j), CloseT(cursor_C)), W(CloseT(cursor_C),  Nodes(i)));
             PathbasedW(Nodes(i), CloseT(j) )= PathbasedW(CloseT(j), Nodes(i)) ;
         end
 
         % Nodes to Open table
-        for j = 1: cursor_T          
+        for j = 1: cursor_T
             PathbasedW(OpenT(j), Nodes(i)) = max(PathbasedW(OpenT(j), CloseT(cursor_C)), W(CloseT(cursor_C),  Nodes(i)));
             PathbasedW(Nodes(i), OpenT(j) )= PathbasedW(OpenT(j), Nodes(i)) ;
         end
     end
-            
+
     % Nodes each other
     for i = 1: length(Nodes) - 1
         for j = i  + 1: length(Nodes)
@@ -201,10 +201,10 @@ while cursor_C < N
         % Nodes are added into OpenT
         cursor_T = cursor_T + 1;
         OpenT(cursor_T) = Nodes(i);
-    end        
+    end
     cursor_C = cursor_C + 1;
     CloseT(cursor_C) = OpenT(cursor_T);
     Visited(OpenT(cursor_T)) = 1;
-    cursor_T = cursor_T - 1;                
+    cursor_T = cursor_T - 1;
 end
 

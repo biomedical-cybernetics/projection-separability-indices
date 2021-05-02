@@ -10,7 +10,7 @@ fields = fieldnames(results);
 for index=1:numel(fields)
     name = fields{index};
     fprintf('Null model results for: %s index\n\n', name);
-    
+
     result = results.(name);
     table = struct2table(result);
     disp(table);

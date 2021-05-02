@@ -4,7 +4,7 @@
 
 function [ Gs ] = SilhouetteIndex(id , data , nClusters)
 % Summary Calculates the global silhouette value for a clustering algorithm
-% USAGE [GS] = SilhouetteIndex(Idx , data) 
+% USAGE [GS] = SilhouetteIndex(Idx , data)
 % Reference : Color Segmentation Using Improved MountainClustering
 % Technique Version-2 Nk Verma
 
@@ -18,8 +18,8 @@ end
 
 % Finding no. of points in each cluster
 for i = 1:N
-    Nm(id(i)) = Nm(id(i)) +1; 
-end    
+    Nm(id(i)) = Nm(id(i)) +1;
+end
 
 s = silhouette(data,id);
 for i=1:N

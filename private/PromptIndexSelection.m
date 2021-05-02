@@ -12,7 +12,7 @@ while ~correct
     fprintf('[6] Silhouette Index (SIL)\n');
     fprintf('[7] Geometric Separability Index (GSI)\n');
     fprintf('[8] Cluster Validity Density-involved Distance (CVDD)\n');
-    fprintf('# Select your indices (range between 1:7)\n');
+    fprintf('# Select your indices (range between 1:8)\n');
     SelectedIndices = input('-> ');
     if isempty(SelectedIndices)
         SelectedIndices = 1:8;

@@ -62,6 +62,27 @@ class ProjectionSeparabilityIndex:
         aupr = metrics.auc(recall, precision)
         return auc, aupr
 
+    def __compute_mcc(self, labels, scores, positives):
+        total_positive = np.sum(labels == positives)
+        total_negative = np.sum(labels != positives)
+        negative_class = np.unique(labels[labels != positives]).item()
+        true_labels = labels[np.argsort(scores)]
+
+        ps = np.array([positives] * total_positive)
+        ng = np.array([negative_class] * total_negative)
+
+        coefficients = np.empty([0])
+        for ix in range(0, 2):
+            if ix == 0:
+                predicted_labels = np.concatenate((ps, ng), axis=0)
+            else:
+                predicted_labels = np.concatenate((ng, ps), axis=0)
+            coefficients = np.append(coefficients, metrics.matthews_corrcoef(true_labels, predicted_labels))
+
+        mcc = np.max(coefficients)
+
+        return mcc
+
     def calculate(self):
         # obtaining unique sample labels
         unique_labels = np.unique(self.sample_labels);
@@ -89,6 +110,7 @@ class ProjectionSeparabilityIndex:
         mann_whitney_values = np.empty([0])
         auc_values = np.empty([0])
         aupr_values = np.empty([0])
+        mcc_values = np.empty([0])
 
         for index_group_combination in range(pairwise_group_combinations):
             if self.center_formula == 'median':
@@ -136,6 +158,9 @@ class ProjectionSeparabilityIndex:
             auc_values = np.append(auc_values, auc)
             aupr_values = np.append(aupr_values, aupr)
 
+            mcc = self.__compute_mcc(sample_labels_membership, cluster_projection_1d, current_positive_class)
+            mcc_values = np.append(mcc_values, mcc)
+
             m = m + 1
             if m > number_unique_labels:
                 n = n + 1
@@ -144,5 +169,6 @@ class ProjectionSeparabilityIndex:
         psi_p = (np.mean(mann_whitney_values) + np.std(mann_whitney_values)) / (np.std(mann_whitney_values) + 1)
         psi_roc = np.mean(auc_values) / (np.std(auc_values) + 1)
         psi_pr = np.mean(aupr_values) / (np.std(aupr_values) + 1)
+        psi_mcc = np.mean(mcc_values) / (np.std(mcc_values) + 1)
 
-        return psi_p, psi_roc, psi_pr
+        return psi_p, psi_roc, psi_pr, psi_mcc

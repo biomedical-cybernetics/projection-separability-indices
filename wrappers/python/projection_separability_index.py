@@ -1,10 +1,12 @@
 from scipy.spatial.distance import cdist
 from scipy.stats._mannwhitneyu import mannwhitneyu
+from sklearn import metrics
 import numpy as np
 
 
 class ProjectionSeparabilityIndex:
     def __init__(self, data_matrix, sample_labels, positive_classes, center_formula):
+        # TODO: Add validations (positive classes)
         self.data_matrix = data_matrix
         self.sample_labels = sample_labels
         self.positive_classes = positive_classes
@@ -48,6 +50,18 @@ class ProjectionSeparabilityIndex:
 
         return V
 
+    def __compute_auc_aupr(self, labels, scores, positives):
+        fpr, tpr, thresholds = metrics.roc_curve(labels, scores, pos_label=positives)
+        auc = metrics.auc(fpr, tpr)
+        if auc < 0.5:
+            auc = 1 - auc
+            flipped_scores = 2 * np.mean(scores) - scores
+            precision, recall, thresholds = metrics.precision_recall_curve(labels, flipped_scores, pos_label=positives)
+        else:
+            precision, recall, thresholds = metrics.precision_recall_curve(labels, scores, pos_label=positives)
+        aupr = metrics.auc(recall, precision)
+        return auc, aupr
+
     def calculate(self):
         # obtaining unique sample labels
         unique_labels = np.unique(self.sample_labels);
@@ -73,6 +87,8 @@ class ProjectionSeparabilityIndex:
         pairwise_group_combinations = self.__nchoosek(number_unique_labels, 2)
 
         mann_whitney_values = np.empty([0])
+        auc_values = np.empty([0])
+        aupr_values = np.empty([0])
 
         for index_group_combination in range(pairwise_group_combinations):
             if self.center_formula == 'median':
@@ -106,11 +122,27 @@ class ProjectionSeparabilityIndex:
             mw = mannwhitneyu(dp_scores_cluster_1, dp_scores_cluster_2, method="exact")
             mann_whitney_values = np.append(mann_whitney_values, mw.pvalue)
 
+            # sample membership
+            samples_cluster_N = self.sample_labels[np.where(self.sample_labels == unique_labels[n])[0]]
+            samples_cluster_M = self.sample_labels[np.where(self.sample_labels == unique_labels[m])[0]]
+            sample_labels_membership = np.concatenate((samples_cluster_N, samples_cluster_M), axis=0)
+
+            for o in range(len(self.positive_classes)):
+                if np.any(sample_labels_membership == self.positive_classes[o]):
+                    current_positive_class = self.positive_classes[o]
+                    break
+
+            auc, aupr = self.__compute_auc_aupr(sample_labels_membership, cluster_projection_1d, current_positive_class)
+            auc_values = np.append(auc_values, auc)
+            aupr_values = np.append(aupr_values, aupr)
+
             m = m + 1
             if m > number_unique_labels:
                 n = n + 1
                 m = n + 1
 
         psi_p = (np.mean(mann_whitney_values) + np.std(mann_whitney_values)) / (np.std(mann_whitney_values) + 1)
+        psi_roc = np.mean(auc_values) / (np.std(auc_values) + 1)
+        psi_pr = np.mean(aupr_values) / (np.std(aupr_values) + 1)
 
-        return psi_p
+        return psi_p, psi_roc, psi_pr

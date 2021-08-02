@@ -75,6 +75,10 @@ for l=1:nchoosek(numberUniqueLabels, 2) % number of sample labels combinations
 	%% Mann-Whitney
 	sizeClusterN = size(dataClustered{n},1);
 	sizeClusterM = size(dataClustered{m},1);
+    
+    dp_scores_cluster_1 = clustersProjection1D(1:sizeClusterN);
+    dp_scores_cluster_2 = clustersProjection1D(sizeClusterN+1:sizeClusterN+sizeClusterM);
+    
 	mannWhitneyValues{l} = ranksum(clustersProjection1D(1:sizeClusterN),clustersProjection1D(sizeClusterN+1:sizeClusterN+sizeClusterM));
 
 	% sample membership

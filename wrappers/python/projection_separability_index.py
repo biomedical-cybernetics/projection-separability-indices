@@ -111,6 +111,7 @@ class ProjectionSeparabilityIndex:
         auc_values = np.empty([0])
         aupr_values = np.empty([0])
         mcc_values = np.empty([0])
+        clusters_projections = [np.empty([0, dimensions_number])] * number_unique_labels
 
         for index_group_combination in range(pairwise_group_combinations):
             if self.center_formula == 'median':
@@ -122,12 +123,14 @@ class ProjectionSeparabilityIndex:
             if (centroid_cluster_1 == centroid_cluster_2).all():
                 raise RuntimeError('clusters have the same centroid: no line can be traced between them')
 
-            clusters_line = self.__create_line_between_centroids(centroid_cluster_1, centroid_cluster_2);
+            clusters_line = self.__create_line_between_centroids(centroid_cluster_1, centroid_cluster_2)
 
-            clusters_projections = [np.empty([0, dimensions_number])] * 2
+            clusters_projections[n] = np.empty([0, dimensions_number])
             for o in range(np.shape(data_clustered[n])[0]):
                 proj = self.__project_points_on_line(data_clustered[n][o], clusters_line)
                 clusters_projections[n] = np.vstack([clusters_projections[n], proj])
+
+            clusters_projections[m] = np.empty([0, dimensions_number])
             for o in range(np.shape(data_clustered[m])[0]):
                 proj = self.__project_points_on_line(data_clustered[m][o], clusters_line)
                 clusters_projections[m] = np.vstack([clusters_projections[m], proj])
@@ -140,29 +143,30 @@ class ProjectionSeparabilityIndex:
 
             dp_scores_cluster_1 = cluster_projection_1d[0:size_cluster_n]
             dp_scores_cluster_2 = cluster_projection_1d[size_cluster_n:size_cluster_n + size_cluster_m]
+            dp_scores = np.concatenate([dp_scores_cluster_1, dp_scores_cluster_2])
 
             mw = mannwhitneyu(dp_scores_cluster_1, dp_scores_cluster_2, method="exact")
             mann_whitney_values = np.append(mann_whitney_values, mw.pvalue)
 
             # sample membership
-            samples_cluster_N = self.sample_labels[np.where(self.sample_labels == unique_labels[n])[0]]
-            samples_cluster_M = self.sample_labels[np.where(self.sample_labels == unique_labels[m])[0]]
-            sample_labels_membership = np.concatenate((samples_cluster_N, samples_cluster_M), axis=0)
+            samples_cluster_n = self.sample_labels[np.where(self.sample_labels == unique_labels[n])[0]]
+            samples_cluster_m = self.sample_labels[np.where(self.sample_labels == unique_labels[m])[0]]
+            sample_labels_membership = np.concatenate((samples_cluster_n, samples_cluster_m), axis=0)
 
             for o in range(len(self.positive_classes)):
                 if np.any(sample_labels_membership == self.positive_classes[o]):
                     current_positive_class = self.positive_classes[o]
                     break
 
-            auc, aupr = self.__compute_auc_aupr(sample_labels_membership, cluster_projection_1d, current_positive_class)
+            auc, aupr = self.__compute_auc_aupr(sample_labels_membership, dp_scores, current_positive_class)
             auc_values = np.append(auc_values, auc)
             aupr_values = np.append(aupr_values, aupr)
 
-            mcc = self.__compute_mcc(sample_labels_membership, cluster_projection_1d, current_positive_class)
+            mcc = self.__compute_mcc(sample_labels_membership, dp_scores, current_positive_class)
             mcc_values = np.append(mcc_values, mcc)
 
             m = m + 1
-            if m > number_unique_labels:
+            if m > (number_unique_labels - 1):
                 n = n + 1
                 m = n + 1
 

@@ -116,7 +116,7 @@ class ProjectionSeparabilityIndex:
 
         pairwise_group_combinations = self.__nchoosek(number_unique_labels, 2)
 
-        mann_whitney_values = np.empty([0])
+        mw_values = np.empty([0])
         auc_values = np.empty([0])
         aupr_values = np.empty([0])
         mcc_values = np.empty([0])
@@ -127,6 +127,9 @@ class ProjectionSeparabilityIndex:
             if self.center_formula == 'median':
                 centroid_cluster_1 = np.median(data_clustered[n], axis=0)
                 centroid_cluster_2 = np.median(data_clustered[m], axis=0)
+            elif self.center_formula == 'mean':
+                centroid_cluster_1 = np.mean(data_clustered[n], axis=0)
+                centroid_cluster_2 = np.mean(data_clustered[m], axis=0)
             # TODO: mean and mode
 
             if centroid_cluster_1 is None or centroid_cluster_2 is None:
@@ -156,7 +159,7 @@ class ProjectionSeparabilityIndex:
             dp_scores = np.concatenate([dp_scores_cluster_1, dp_scores_cluster_2])
 
             mw = mannwhitneyu(dp_scores_cluster_1, dp_scores_cluster_2, method="exact")
-            mann_whitney_values = np.append(mann_whitney_values, mw.pvalue)
+            mw_values = np.append(mw_values, mw.pvalue)
 
             # sample membership
             samples_cluster_n = self.sample_labels[np.where(self.sample_labels == unique_labels[n])[0]]
@@ -184,9 +187,9 @@ class ProjectionSeparabilityIndex:
                 n = n + 1
                 m = n + 1
 
-        psi_p = (np.mean(mann_whitney_values) + np.std(mann_whitney_values)) / (np.std(mann_whitney_values) + 1)
-        psi_roc = np.mean(auc_values) / (np.std(auc_values) + 1)
-        psi_pr = np.mean(aupr_values) / (np.std(aupr_values) + 1)
-        psi_mcc = np.mean(mcc_values) / (np.std(mcc_values) + 1)
+        psi_p = (np.mean(mw_values) + np.std(mw_values, ddof=1)) / (np.std(mw_values, ddof=1) + 1)
+        psi_roc = np.mean(auc_values) / (np.std(auc_values, ddof=1) + 1)
+        psi_pr = np.mean(aupr_values) / (np.std(aupr_values, ddof=1) + 1)
+        psi_mcc = np.mean(mcc_values) / (np.std(mcc_values, ddof=1) + 1)
 
         return psi_p, psi_roc, psi_pr, psi_mcc

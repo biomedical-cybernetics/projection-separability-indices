@@ -1,7 +1,6 @@
-from scipy.spatial.distance import cdist
-from scipy.stats._mannwhitneyu import mannwhitneyu
-from sklearn import metrics
 import numpy as np
+from scipy.stats import mannwhitneyu
+from sklearn import metrics
 
 
 class ProjectionSeparabilityIndex:
@@ -12,6 +11,7 @@ class ProjectionSeparabilityIndex:
         self.positive_classes = positive_classes
         self.center_formula = center_formula
 
+    # noinspection PyMethodMayBeStatic
     def __nchoosek(self, n, k):
         if k == 0:
             r = 1
@@ -19,37 +19,45 @@ class ProjectionSeparabilityIndex:
             r = n / k * self.__nchoosek(n - 1, k - 1)
         return round(r)
 
+    # noinspection PyMethodMayBeStatic
     def __create_line_between_centroids(self, centroid1, centroid2):
         return np.vstack([centroid1, centroid2])
 
+    # noinspection PyMethodMayBeStatic
     def __project_points_on_line(self, point, line):
         # centroids
-        A = line[0]
-        B = line[1]
+        a = line[0]
+        b = line[1]
 
         # deltas
-        AP = point - A
-        AB = B - A
+        ap = point - a
+        ab = b - a
 
         # projection
-        projected_point = A + np.dot(AP, AB) / np.dot(AB, AB) * AB
+        projected_point = a + np.dot(ap, ab) / np.dot(ab, ab) * ab
 
         return projected_point
 
+    # noinspection PyMethodMayBeStatic
     def __convert_points_to_one_dimension(self, points):
+        start_point = None
         for ix in range(points.ndim):
             if np.unique(points[:, ix]).size != 1:
                 start_point = np.array(points[np.argmin(points[:, ix], axis=0), :]).reshape(1, points.ndim)
                 break
 
-        V = np.zeros(np.shape(points)[0])
+        if start_point is None:
+            raise RuntimeError('impossible to set projection starting point')
+
+        v = np.zeros(np.shape(points)[0])
         for ix in range(points.ndim):
-            V = np.add(V, np.power(points[:, ix] - np.min(start_point[:, ix]), 2))
+            v = np.add(v, np.power(points[:, ix] - np.min(start_point[:, ix]), 2))
 
-        V = np.sqrt(V)
+        v = np.sqrt(v)
 
-        return V
+        return v
 
+    # noinspection PyMethodMayBeStatic
     def __compute_auc_aupr(self, labels, scores, positives):
         fpr, tpr, thresholds = metrics.roc_curve(labels, scores, pos_label=positives)
         auc = metrics.auc(fpr, tpr)
@@ -62,6 +70,7 @@ class ProjectionSeparabilityIndex:
         aupr = metrics.auc(recall, precision)
         return auc, aupr
 
+    # noinspection PyMethodMayBeStatic
     def __compute_mcc(self, labels, scores, positives):
         total_positive = np.sum(labels == positives)
         total_negative = np.sum(labels != positives)
@@ -85,8 +94,8 @@ class ProjectionSeparabilityIndex:
 
     def calculate(self):
         # obtaining unique sample labels
-        unique_labels = np.unique(self.sample_labels);
-        number_unique_labels = len(unique_labels);
+        unique_labels = np.unique(self.sample_labels)
+        number_unique_labels = len(unique_labels)
 
         # checking range of dimensions
         dimensions_number = self.data_matrix.ndim
@@ -114,23 +123,24 @@ class ProjectionSeparabilityIndex:
         clusters_projections = [np.empty([0, dimensions_number])] * number_unique_labels
 
         for index_group_combination in range(pairwise_group_combinations):
+            centroid_cluster_1 = centroid_cluster_2 = None
             if self.center_formula == 'median':
                 centroid_cluster_1 = np.median(data_clustered[n], axis=0)
                 centroid_cluster_2 = np.median(data_clustered[m], axis=0)
-
             # TODO: mean and mode
 
-            if (centroid_cluster_1 == centroid_cluster_2).all():
+            if centroid_cluster_1 is None or centroid_cluster_2 is None:
+                raise RuntimeError('impossible to set clusters centroids')
+            elif (centroid_cluster_1 == centroid_cluster_2).all():
                 raise RuntimeError('clusters have the same centroid: no line can be traced between them')
 
             clusters_line = self.__create_line_between_centroids(centroid_cluster_1, centroid_cluster_2)
 
-            clusters_projections[n] = np.empty([0, dimensions_number])
+            clusters_projections[n] = clusters_projections[m] = np.empty([0, dimensions_number])
+
             for o in range(np.shape(data_clustered[n])[0]):
                 proj = self.__project_points_on_line(data_clustered[n][o], clusters_line)
                 clusters_projections[n] = np.vstack([clusters_projections[n], proj])
-
-            clusters_projections[m] = np.empty([0, dimensions_number])
             for o in range(np.shape(data_clustered[m])[0]):
                 proj = self.__project_points_on_line(data_clustered[m][o], clusters_line)
                 clusters_projections[m] = np.vstack([clusters_projections[m], proj])
@@ -153,10 +163,14 @@ class ProjectionSeparabilityIndex:
             samples_cluster_m = self.sample_labels[np.where(self.sample_labels == unique_labels[m])[0]]
             sample_labels_membership = np.concatenate((samples_cluster_n, samples_cluster_m), axis=0)
 
+            current_positive_class = None
             for o in range(len(self.positive_classes)):
                 if np.any(sample_labels_membership == self.positive_classes[o]):
                     current_positive_class = self.positive_classes[o]
                     break
+
+            if current_positive_class is None:
+                raise RuntimeError('impossible to set the current positive class')
 
             auc, aupr = self.__compute_auc_aupr(sample_labels_membership, dp_scores, current_positive_class)
             auc_values = np.append(auc_values, auc)

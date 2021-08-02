@@ -1,7 +1,5 @@
 import warnings
-
 import numpy as np
-from scipy.stats import mannwhitneyu
 from scipy import stats
 from sklearn import metrics
 
@@ -83,7 +81,7 @@ class ProjectionSeparabilityIndex:
 
     # noinspection PyMethodMayBeStatic
     def __compute_mannwhitney(self, scores_c1, scores_c2):
-        mw = mannwhitneyu(scores_c1, scores_c2, method="exact")
+        mw = stats.mannwhitneyu(scores_c1, scores_c2, method="exact")
         return mw
 
     # noinspection PyMethodMayBeStatic

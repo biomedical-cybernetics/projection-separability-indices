@@ -1,15 +1,38 @@
+import warnings
+
 import numpy as np
 from scipy.stats import mannwhitneyu
+from scipy import stats
 from sklearn import metrics
 
 
 class ProjectionSeparabilityIndex:
-    def __init__(self, data_matrix, sample_labels, positive_classes, center_formula):
-        # TODO: Add validations (positive classes)
+    def __init__(self, data_matrix, sample_labels, positive_classes=None, center_formula='median'):
         self.data_matrix = data_matrix
         self.sample_labels = sample_labels
-        self.positive_classes = positive_classes
         self.center_formula = center_formula
+        if positive_classes is not None:
+            self.positive_classes = positive_classes
+        else:
+            self.__set_positive_classes()
+
+    # noinspection PyMethodMayBeStatic
+    def __set_positive_classes(self):
+        positives, positions = np.unique(self.sample_labels, return_inverse=True)
+        max_pos = np.bincount(positions).argmax()
+        positives = np.delete(positives, max_pos)
+        self.positive_classes = positives
+
+    # noinspection PyMethodMayBeStatic
+    def __mode_distribution(self, data_clustered):
+        mode_dist = np.empty([0])
+        for ix in range(data_clustered.ndim):
+            kde = stats.gaussian_kde(data_clustered[:, ix])
+            xi = np.linspace(data_clustered.min(), data_clustered.max(), 100)
+            p = kde(xi)
+            ind = np.argmax([p])
+            mode_dist = np.append(mode_dist, xi[ind])
+        return mode_dist
 
     # noinspection PyMethodMayBeStatic
     def __nchoosek(self, n, k):
@@ -21,7 +44,8 @@ class ProjectionSeparabilityIndex:
 
     # noinspection PyMethodMayBeStatic
     def __create_line_between_centroids(self, centroid1, centroid2):
-        return np.vstack([centroid1, centroid2])
+        line = np.vstack([centroid1, centroid2])
+        return line
 
     # noinspection PyMethodMayBeStatic
     def __project_points_on_line(self, point, line):
@@ -56,6 +80,11 @@ class ProjectionSeparabilityIndex:
         v = np.sqrt(v)
 
         return v
+
+    # noinspection PyMethodMayBeStatic
+    def __compute_mannwhitney(self, scores_c1, scores_c2):
+        mw = mannwhitneyu(scores_c1, scores_c2, method="exact")
+        return mw
 
     # noinspection PyMethodMayBeStatic
     def __compute_auc_aupr(self, labels, scores, positives):
@@ -111,7 +140,7 @@ class ProjectionSeparabilityIndex:
         n = 0
         m = 1
         if self.center_formula != 'mean' and self.center_formula != 'median' and self.center_formula != 'mode':
-            # TODO: warning('your center formula is not valid: median will be applied')
+            warnings.warn('your center formula is not valid: median will be applied')
             self.center_formula = 'median'
 
         pairwise_group_combinations = self.__nchoosek(number_unique_labels, 2)
@@ -130,7 +159,9 @@ class ProjectionSeparabilityIndex:
             elif self.center_formula == 'mean':
                 centroid_cluster_1 = np.mean(data_clustered[n], axis=0)
                 centroid_cluster_2 = np.mean(data_clustered[m], axis=0)
-            # TODO: mean and mode
+            elif self.center_formula == 'mode':
+                centroid_cluster_1 = self.__mode_distribution(data_clustered[n])
+                centroid_cluster_2 = self.__mode_distribution(data_clustered[m])
 
             if centroid_cluster_1 is None or centroid_cluster_2 is None:
                 raise RuntimeError('impossible to set clusters centroids')
@@ -158,7 +189,7 @@ class ProjectionSeparabilityIndex:
             dp_scores_cluster_2 = cluster_projection_1d[size_cluster_n:size_cluster_n + size_cluster_m]
             dp_scores = np.concatenate([dp_scores_cluster_1, dp_scores_cluster_2])
 
-            mw = mannwhitneyu(dp_scores_cluster_1, dp_scores_cluster_2, method="exact")
+            mw = self.__compute_mannwhitney(dp_scores_cluster_1, dp_scores_cluster_2)
             mw_values = np.append(mw_values, mw.pvalue)
 
             # sample membership

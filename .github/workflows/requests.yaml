@@ -11,7 +11,7 @@ jobs:
     strategy:
       fail-fast: true
       matrix:
-        release-release: ["R2017a", "R2021a"]
+        release-release: ["R2021a"]
 
     steps:
       - name: Checkout source

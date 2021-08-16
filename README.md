@@ -13,7 +13,11 @@ Based on this new rationale, we implemented a new class of validity indices base
 
 ## Execution
 
-**Before starting:** This source code has been developed and tested with MATLAB 2017a and newer versions. Keep in mind that lower versions than 2017a have not been tested; thus, compatibility is not warranted.
+### Before starting
+
+**MATLAB version**: This source code has been developed and tested with MATLAB 2017a and newer versions. Keep in mind that lower versions than 2017a have not been tested; thus, compatibility is not warranted.
+
+**Python package**: If you are a Python user, you may want to check out our python package [psis](https://pypi.org/project/psis/). The development of this Python wrapper is hosted in this repository [biomedical-cybernetics/pypsis](https://github.com/biomedical-cybernetics/pypsis); thus, please report any issues or questions regarding this wrapper there.
 
 ### Running the code
 

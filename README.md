@@ -11,13 +11,17 @@ Here we propose a novel rationale named Projection Separability (PS), specifical
 
 Based on this new rationale, we implemented a new class of validity indices based on different statistical separability measures, which we called Projection Separability Indices (PSIs); the first index, PSI-P, evaluates the separability of the points on the projection line using the Mann-Whitney U-test p-value (MW p-value), which is a ranking-based statistical test; the second index, PSI-ROC, adopts as separability measure on the projection line the Area Under the ROC-Curve (AUC-ROC), which provides a measure of a trade-off between true positive rate and false-positive rate; the third index, PSI-PR, which uses instead the Area Under the Precision-Recall Curve (AUC-PR), which gives a measure of a trade-off between precision and sensitivity (a.k.a. recall); and the four index, PSI-MCC, which uses the Matthews correlation coefficient (MCC), which is a correlation coefficient between the observed and predicted binary classifications. Moreover, we have included as well - with the aim of comparison - several commonly used Cluster Validity Indices (CVIs) such as Dunn Index (DI), that relies on the distances among clusters and their diameters; Davies-Bouldin Index (DB), based on the idea that for a good partition inter-cluster separation as well as intra-cluster homogeneity and compactness should be high; Calinski-Harabasz Index (CH), based on the average between-cluster means and within-cluster sum of squares; Silhouette Index (SIL), that validates the clustering performance based on the pairwise difference of between-cluster and within-cluster distances; Generalized Dunn Index (GDI), a variation of the Dunn index; Geometrical Separability Index (GSI) - also known as Thornton’s separability index - which calculates the average number of instances that share the same class label as their nearest neighbors; and Cluster Validity index based on Density-involved Distance (CVDD), a new index based on the density estimation and compactness weights for determining the best grouping of the samples.
 
+## Before starting
+
+### MATLAB version
+
+This source code has been developed and tested with MATLAB 2017a and newer versions. Keep in mind that lower versions than 2017a have not been tested; thus, compatibility is not warranted.
+
+### Python package
+
+If you are a Python user, you may want to check out our python package [psis](https://pypi.org/project/psis/). The development of this Python wrapper is hosted in this repository [biomedical-cybernetics/pypsis](https://github.com/biomedical-cybernetics/pypsis); thus, please report any issues or questions regarding this wrapper there.
+
 ## Execution
-
-### Before starting
-
-**MATLAB version**: This source code has been developed and tested with MATLAB 2017a and newer versions. Keep in mind that lower versions than 2017a have not been tested; thus, compatibility is not warranted.
-
-**Python package**: If you are a Python user, you may want to check out our python package [psis](https://pypi.org/project/psis/). The development of this Python wrapper is hosted in this repository [biomedical-cybernetics/pypsis](https://github.com/biomedical-cybernetics/pypsis); thus, please report any issues or questions regarding this wrapper there.
 
 ### Running the code
 

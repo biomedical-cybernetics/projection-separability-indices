@@ -1,0 +1,28 @@
+name: New features
+
+on:
+  pull_request:
+    branches:
+      - updates
+
+jobs:
+  test_pull_request:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: true
+      matrix:
+        release-release: ["R2017a", "R2021a"]
+
+    steps:
+      - name: Checkout source
+        uses: actions/checkout@v2
+
+      - name: Setup MATLAB
+        uses: matlab-actions/setup-matlab@v1
+        with:
+          release: ${{ matrix.matlab-release }}
+
+      - name: Run tests
+        uses: matlab-actions/run-tests@v1
+        with:
+          source-folder: private/

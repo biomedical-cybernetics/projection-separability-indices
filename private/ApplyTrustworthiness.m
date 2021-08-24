@@ -1,4 +1,4 @@
-function NullModel = ApplyNullModel(NumberOfIterations, SelectedIndices, ProcessData, IndicesValues)
+function Trustworthiness = ApplyTrustworthiness(NumberOfIterations, SelectedIndices, ProcessData, IndicesValues)
 NumberOfSampleLabels = numel(ProcessData.SampleLabels);
 randGenerator = parallel.pool.Constant(RandStream.getGlobalStream());
 
@@ -37,11 +37,11 @@ for ix=1:length(IndicesNames)
         PValue = (sum(IndexPermutations > IndexValue)+1)/(NumberOfIterations+1);
     end
 
-    NullModel.(IndexName).IndexValue = IndexValue;
-    NullModel.(IndexName).IndexPermutations = IndexPermutations;
-    NullModel.(IndexName).MaxValue = max(IndexPermutations);
-    NullModel.(IndexName).MinValue = min(IndexPermutations);
-    NullModel.(IndexName).MeanValue = mean(IndexPermutations);
-    NullModel.(IndexName).StandardDeviation = std(IndexPermutations)/sqrt(NumberOfIterations);
-    NullModel.(IndexName).PValue = PValue;
+    Trustworthiness.(IndexName).IndexValue = IndexValue;
+    Trustworthiness.(IndexName).IndexPermutations = IndexPermutations;
+    Trustworthiness.(IndexName).MaxValue = max(IndexPermutations);
+    Trustworthiness.(IndexName).MinValue = min(IndexPermutations);
+    Trustworthiness.(IndexName).MeanValue = mean(IndexPermutations);
+    Trustworthiness.(IndexName).StandardDeviation = std(IndexPermutations)/sqrt(NumberOfIterations);
+    Trustworthiness.(IndexName).PValue = PValue;
 end

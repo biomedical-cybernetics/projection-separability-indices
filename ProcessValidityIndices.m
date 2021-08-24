@@ -9,21 +9,21 @@ function ValidityIndices = ProcessValidityIndices(DataMatrix, SampleLabels, Posi
 %		- SampleLabels: List of sample labels (type: cell array)
 %		- PositiveClasses: List of positive sample labels (type: cell array)
 %   OUTPUT Values:
-%		Without applying a Null Model:
+%		Without applying trustworthiness:
 %		- Struct: IndexName.IndexValue (the number of indices varies according to user preferences)
 %			-> Example: results = ProcessValidityIndices(MyMatrix, MySamples, MyPositiveClasses);
 %			-> results.psip (access to PSI-P index value)
 %
-%		Applying a Null Model:
-%		- Struct: IndexName.NullModelStruct
-%			* NullModelStruct:
+%		Applying trustworthiness:
+%		- Struct: IndexName.TrustworthinessStruct
+%			* TrustworthinessStruct:
 %				+ IndexPermutations: Values returned by the index (the amount of values varies according to user preferences)
 %				+ MaxValue: Maximum value returned by the index (first match)
 %				+ MinValue: Minimum value returned by the index (first match)
 %				+ MeanValue: Mean of the values returned by the index
 %				+ StandardDeviation: Standar deviation obtained from the different values
 %				+ PValue: Final p-value obtained after applying the null model
-%			-> Example: results = ProcessValidityIndices(MyMatrix, MySamples, MyPositiveClasses);
+%			-> Example: results = ProcessValidityIndices(MyMatrix, MySamples, MyPositiveClasses, 'indices', 1:8, 'trustworthiness', 1000);
 %			-> results.psip.MaxValue (access to the maximum value returned by PSI-P index)
 
 % Setting logger level (true = enable, false = disable)
@@ -52,12 +52,12 @@ if ~isempty(varargin)
 		preSelectedIndices = varargin{option+1};
 	end
 
-	option = find(strcmp(varargin, 'nullmodel'));
+	option = find(strcmp(varargin, 'trustworthiness'));
 	if ~isempty(option)
 		if ~isa(varargin{option+1}, 'double')
-			error('The value of the option nullmodel must be numeric (e.g. 100)');
+			error('The value of the option trustworthiness must be numeric (e.g. 100)');
 		end
-		preSelectedNullModel = varargin{option+1};
+		preSelectedTrustworthiness = varargin{option+1};
 	end
 end
 
@@ -87,19 +87,19 @@ else
 	SelectedIndices = PromptIndexSelection();
 end
 
-%% Selecting if null model will be applied
-if exist('preSelectedNullModel', 'var') == 1
-	NullModel = preSelectedNullModel > 0;
-	NumberOfIterations = preSelectedNullModel;
+%% Selecting if trustworthiness will be applied
+if exist('preSelectedTrustworthiness', 'var') == 1
+	Trustworthiness = preSelectedTrustworthiness > 0;
+	NumberOfIterations = preSelectedTrustworthiness;
 else
-	[NullModel, NumberOfIterations] = PromptNullModel();
+	[Trustworthiness, NumberOfIterations] = PromptTrustworthiness();
 end
 
-if NullModel
-	%% Processing null model
-	Logger(logger, 'Processing null model...');
+if Trustworthiness
+	%% Processing trustworthiness
+	Logger(logger, 'Processing trustworthiness...');
 	IndicesValues = ApplyValidityIndices(SelectedIndices, OriginData);
-	ValidityIndices = ApplyNullModel(NumberOfIterations, SelectedIndices, OriginData, IndicesValues);
+	ValidityIndices = ApplyTrustworthiness(NumberOfIterations, SelectedIndices, OriginData, IndicesValues);
 else
 	%% Processing validity indices
 	Logger(logger, 'Processing validity indices...');

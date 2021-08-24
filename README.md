@@ -103,7 +103,7 @@ Done.
 
 Then the variable `ValidityIndicesResults` will contain all indices results. Thus, you can easily access them as `ValidityIndicesResults.psip`, `ValidityIndicesResults.dn`, `ValidityIndicesResults.th`, and so on.
 
-_**Hint: you can run Example1.m for having a quick example of this section.**_
+_**Hint: you can run [Example1.m](./Example1.m) for having a quick example of this section.**_
 
 #### Running an analysis with trustworthiness
 
@@ -166,7 +166,7 @@ Done.
 
 Then the variable `TrustworthinessResults` will contain all null model results. Hence, you can easily access them as `TrustworthinessResults.psip.PValue`, `TrustworthinessResults.dn.StandardDeviation`, and so on.
 
-_**Hint: you can run Example2.m for having a quick example of this section.**_
+_**Hint: you can run [Example2.m](./Example2.m) for having a quick example of this section.**_
 
 ##### Disabling command prompts
 

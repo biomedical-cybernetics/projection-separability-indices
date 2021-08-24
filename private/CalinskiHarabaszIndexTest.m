@@ -3,7 +3,7 @@ function tests = CalinskiHarabaszIndexTest
 end
 
 function TestPerfectSeparation(testCase)
-	input.matrix = [1 2; 3 4; 5 6; 7 8; 10 11; 12 13; 14 15; 16 17];
+    input.matrix = [1 2; 3 4; 5 6; 7 8; 10 11; 12 13; 14 15; 16 17];
     input.samples = {'sample1','sample1','sample1','sample1','sample2','sample2','sample2','sample2'}';
     input.numericSamples = findgroups(input.samples);
     input.lenUniqueSamples = numel(unique(input.samples));
@@ -13,7 +13,7 @@ function TestPerfectSeparation(testCase)
 end
 
 function TestMixedSeparation(testCase)
-	input.matrix = [1 2; 3 4; 5 6; 7 8; 10 11; 12 13; 14 15; 16 17];
+    input.matrix = [1 2; 3 4; 5 6; 7 8; 10 11; 12 13; 14 15; 16 17];
     input.samples = {'sample2','sample1','sample1','sample1','sample2','sample2','sample2','sample1'}';
     input.numericSamples = findgroups(input.samples);
     input.lenUniqueSamples = numel(unique(input.samples));
@@ -23,7 +23,7 @@ function TestMixedSeparation(testCase)
 end
 
 function TestNoSeparation(testCase)
-	input.matrix = [1 2; 3 4; 5 6; 7 8; 10 11; 12 13; 14 15; 16 17];
+    input.matrix = [1 2; 3 4; 5 6; 7 8; 10 11; 12 13; 14 15; 16 17];
     input.samples = {'sample1','sample2','sample1','sample2','sample1','sample2','sample1','sample2'}';
     input.numericSamples = findgroups(input.samples);
     input.lenUniqueSamples = numel(unique(input.samples));

@@ -25,6 +25,10 @@ This source code has been developed and tested with MATLAB 2017a and newer versi
 
 If you are a Python user, you may want to check out our python package [psis](https://pypi.org/project/psis/). The development of this Python wrapper is hosted in this repository [biomedical-cybernetics/pypsis](https://github.com/biomedical-cybernetics/pypsis); thus, please report any issues or questions regarding this wrapper there.
 
+### Datasets
+
+You can find all initially studied datasets in the _[datasets](./datasets)_ folder.
+
 ## Execution
 
 ### Running the code

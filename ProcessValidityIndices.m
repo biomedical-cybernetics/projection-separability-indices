@@ -103,14 +103,6 @@ else
 	SelectedIndices = PromptIndexSelection();
 end
 
-%% Selecting if trustworthiness will be applied
-if (exist('preSelectedTrustworthiness', 'var') == 1)
-	Trustworthiness = preSelectedTrustworthiness > 0;
-	NumberOfIterations = preSelectedTrustworthiness;
-else
-	[Trustworthiness, NumberOfIterations] = PromptTrustworthiness();
-end
-
 if (min(SelectedIndices) == 1) % extra PSI options
 	if (exist('preSelectedProjectionType', 'var') == 1)
 		OriginData.Options.ProjectionType = preSelectedProjectionType;
@@ -125,6 +117,14 @@ if (min(SelectedIndices) == 1) % extra PSI options
 	else
 		OriginData.Options.CenterFormula = NaN;
 	end
+end
+
+%% Selecting if trustworthiness will be applied
+if (exist('preSelectedTrustworthiness', 'var') == 1)
+	Trustworthiness = preSelectedTrustworthiness > 0;
+	NumberOfIterations = preSelectedTrustworthiness;
+else
+	[Trustworthiness, NumberOfIterations] = PromptTrustworthiness();
 end
 
 if Trustworthiness

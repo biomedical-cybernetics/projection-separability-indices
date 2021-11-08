@@ -26,7 +26,7 @@ function ValidityIndices = ProcessValidityIndices(DataMatrix, SampleLabels, Posi
 %			-> Example: results = ProcessValidityIndices(MyMatrix, MySamples, MyPositiveClasses, 'indices', 1:8, 'trustworthiness', 1000);
 %			-> results.psip.MaxValue (access to the maximum value returned by PSI-P index)
 
-% Setting logger level (true = enable, false = disable)
+% Setting logger level (true = enabled, false = disabled)
 logger = true;
 
 % Checking extra parameters
@@ -35,29 +35,49 @@ if ~isempty(varargin)
 		error('Extra parameters must be in a key value format');
 	end
 
-	option = find(strcmp(varargin, 'seed'));
+	option = find(strcmpi(varargin, 'Seed'));
 	if ~isempty(option)
 		if ~isa(varargin{option+1}, 'double')
-			error('The value of the option seed must be numeric (e.g. 100)');
+			error('The value of the option <Seed> must be numeric (e.g., 100)');
 		end
 		seed = RandStream.create('mrg32k3a', 'seed', varargin{option+1});
 		RandStream.setGlobalStream(seed);
 	end
 
-	option = find(strcmp(varargin, 'indices'));
+	option = find(strcmpi(varargin, 'Indices'));
 	if ~isempty(option)
 		if ~isa(varargin{option+1}, 'double')
-			error('The value of the option indices must be numeric (e.g. 1) or a range (e.g. 1:8)');
+			error('The value of the option <Indices> must be numeric (e.g., 1) or a range (e.g., 1:8)');
 		end
 		preSelectedIndices = varargin{option+1};
 	end
 
-	option = find(strcmp(varargin, 'trustworthiness'));
+	option = find(strcmpi(varargin, 'Trustworthiness'));
 	if ~isempty(option)
 		if ~isa(varargin{option+1}, 'double')
-			error('The value of the option trustworthiness must be numeric (e.g. 100)');
+			error('The value of the option <Trustworthiness> must be numeric (e.g., 100)');
 		end
 		preSelectedTrustworthiness = varargin{option+1};
+	end
+
+	option = find(strcmpi(varargin, 'CenterFormula'));
+	if ~isempty(option)
+		if ~isa(varargin{option+1}, 'char')
+			error('The value of the option <CenterFormula> must be char (e.g., median, mean, or mode)');
+		end
+		preSelectedCenterFormula = varargin{option+1};
+	else
+		preSelectedCenterFormula = 'median'; % default
+	end
+
+	option = find(strcmpi(varargin, 'ProjectionType'));
+	if ~isempty(option)
+		if ~isa(varargin{option+1}, 'char')
+			error('The value of the option <ProjectionType> must be char (e.g., centroid or lda)');
+		end
+		preSelectedProjectionType = varargin{option+1};
+	else
+		preSelectedProjectionType = 'centroid'; % default
 	end
 end
 
@@ -79,6 +99,8 @@ OriginData.LenUniqueLabels = length(OriginData.UniqueSampleLabels);
 OriginData.NumericSampleLabels = findgroups(OriginData.SampleLabels);
 OriginData.GeneratedClusters = GenerateClusters(OriginData.DataMatrix, OriginData.SampleLabels, OriginData.UniqueSampleLabels, OriginData.LenUniqueLabels);
 OriginData.Dimensions = GenerateDimensions(OriginData.DataMatrix);
+OriginData.Options.CenterFormula = preSelectedCenterFormula;
+OriginData.Options.ProjectionType = preSelectedProjectionType;
 
 %% Selecting indices to process
 if exist('preSelectedIndices', 'var') == 1

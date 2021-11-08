@@ -4,6 +4,7 @@ function [psiP, psiROC, psiPR, psiMCC, dataClustered, samplesClustered] = Projec
 %		- dataMatrix: Data values (type: numeric/double matrix)
 %		- sampleLabels: List of sample labels (type: cell array)
 %		- positiveClasses: List of positive sample labels (type: cell array)
+%		- projectionType: Base approach for projecting the points (options: centroid or lda)
 %		- centerFormula: chosen formula for calculating the centroids (type: char array)
 %   OUTPUT Values:
 %		- psiP: Mean of Mann-Whitney p-values (type: numeric/double)

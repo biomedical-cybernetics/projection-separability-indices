@@ -66,8 +66,6 @@ if ~isempty(varargin)
 			error('The value of the option <CenterFormula> must be char (e.g., median, mean, or mode)');
 		end
 		preSelectedCenterFormula = varargin{option+1};
-	else
-		preSelectedCenterFormula = 'median'; % default
 	end
 
 	option = find(strcmpi(varargin, 'ProjectionType'));
@@ -76,8 +74,6 @@ if ~isempty(varargin)
 			error('The value of the option <ProjectionType> must be char (e.g., centroid or lda)');
 		end
 		preSelectedProjectionType = varargin{option+1};
-	else
-		preSelectedProjectionType = 'centroid'; % default
 	end
 end
 
@@ -99,22 +95,36 @@ OriginData.LenUniqueLabels = length(OriginData.UniqueSampleLabels);
 OriginData.NumericSampleLabels = findgroups(OriginData.SampleLabels);
 OriginData.GeneratedClusters = GenerateClusters(OriginData.DataMatrix, OriginData.SampleLabels, OriginData.UniqueSampleLabels, OriginData.LenUniqueLabels);
 OriginData.Dimensions = GenerateDimensions(OriginData.DataMatrix);
-OriginData.Options.CenterFormula = preSelectedCenterFormula;
-OriginData.Options.ProjectionType = preSelectedProjectionType;
 
 %% Selecting indices to process
-if exist('preSelectedIndices', 'var') == 1
+if (exist('preSelectedIndices', 'var') == 1)
 	SelectedIndices = preSelectedIndices;
 else
 	SelectedIndices = PromptIndexSelection();
 end
 
 %% Selecting if trustworthiness will be applied
-if exist('preSelectedTrustworthiness', 'var') == 1
+if (exist('preSelectedTrustworthiness', 'var') == 1)
 	Trustworthiness = preSelectedTrustworthiness > 0;
 	NumberOfIterations = preSelectedTrustworthiness;
 else
 	[Trustworthiness, NumberOfIterations] = PromptTrustworthiness();
+end
+
+if (min(SelectedIndices) == 1) % extra PSI options
+	if (exist('preSelectedProjectionType', 'var') == 1)
+		OriginData.Options.ProjectionType = preSelectedProjectionType;
+	else
+		OriginData.Options.ProjectionType = PromptProjectionType();
+	end
+
+	if (exist('preSelectedCenterFormula', 'var') == 1)
+		OriginData.Options.CenterFormula = preSelectedCenterFormula;
+	elseif strcmpi(OriginData.Options.ProjectionType, 'centroid')
+		OriginData.Options.CenterFormula = PromptCenterFormula();
+	else
+		OriginData.Options.CenterFormula = NaN;
+	end
 end
 
 if Trustworthiness

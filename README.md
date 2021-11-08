@@ -47,13 +47,13 @@ The definition of the inputs is as follows:
 
 | Input           | Type             | Description  |
 | --------------- |:----------------:| ----------------------------------------- |
-| DataMatrix      | Matrix of double | Matrix of values (*)                      |
+| DataMatrix      | Matrix of double | Matrix of values (a)                      |
 | SampleLabels    | Cell array       | List of sample labels                     |
-| PositiveClasses | Cell array       | List of positive sample labels (**)       |
+| PositiveClasses | Cell array       | List of positive sample labels (b)        |
 
-_(*) For instance, a matrix of NxM results from a dimension reduction method such as Principal Component Analysis (PCA) where the samples are placed as rows and the features as columns._
+_(a) For instance, a matrix of NxM results from a dimension reduction method such as Principal Component Analysis (PCA) where the samples are placed as rows and the features as columns._
 
-_(**) Depending on the study, positive classes are usually ranked as the labels for which a particular prediction is desired. For example, sick patients (positive class) versus controls (negative class); or burnout (positive class), depression (positive class), versus control (negative class). If you are not sure which are your positive classes, then take the groups with the lower number of samples as positive._
+_(b) Depending on the study, positive classes are usually ranked as the labels for which a particular prediction is desired. For example, sick patients (positive class) versus controls (negative class); or burnout (positive class), depression (positive class), versus control (negative class). If you are not sure which are your positive classes, then take the groups with the lower number of samples as positive._
 
 At first, the user has to select which indexes should be included as part of the output:
 
@@ -157,9 +157,9 @@ How many iterations should be applied?:
 ->
 ```
 
-After this step, all selected validity indexes will be processed according to each trustworthiness iteration (*).
+After this step, all selected validity indexes will be processed according to each trustworthiness iteration (a).
 
-_(*) Note that this execution is implemented by using MATLAB's [parfor](https://de.mathworks.com/help/parallel-computing/parfor.html), which executes for-loop iterations in parallel on workers in a parallel pool._
+_(a) Note that this execution is implemented by using MATLAB's [parfor](https://de.mathworks.com/help/parallel-computing/parfor.html), which executes for-loop iterations in parallel on workers in a parallel pool._
 
 Once it is finished, it will return a `struct` of values in which you can access the results of the applied trustworthiness for a single index as `ÒutputVariable.IndexShortName`. This contains the following sub-fields:
 

@@ -31,7 +31,7 @@ You can find all initially studied datasets in the _[datasets](./datasets)_ fold
 
 ### Examples
 
-You can find meaningfull examples in the _[examples/](./examples)_ folder. If you want to execute them, locate yourself in the project's root and execute `addpath('examples/')` to add the example files into the search path for the current MATLAB session.
+You can find meaningfull examples in the _[examples](./examples)_ folder. If you want to execute them, locate yourself in the project's root and execute `addpath('examples/')` to add the example files into the search path for the current MATLAB session.
 
 ## Execution
 
@@ -284,7 +284,7 @@ results = ProcessValidityIndices(DataMatrix, SampleLabels, PositiveClasses, 'Tru
 
 The code above pre-select a trustworthiness by generating a null model of 1000 iterations and prompt the selection of the indices.
 
-**Find more examples at _[examples/](./examples)_ with different settings and use cases.**
+**Find more examples at _[examples](./examples)_ with different settings and use cases.**
 
 # Contact
 Please, report any issue here on Github or contact:

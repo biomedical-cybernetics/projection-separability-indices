@@ -29,6 +29,10 @@ If you are a Python user, you may want to check out our python package [psis](ht
 
 You can find all initially studied datasets in the _[datasets](./datasets)_ folder.
 
+### Examples
+
+You can find meaningfull examples in the _[examples](./examples)_ folder. If you want to execute them, locate yourself in the project's root and execute `addpath('examples')` to add the example files into the search path for the current MATLAB session.
+
 ## Execution
 
 ### Running the code
@@ -47,7 +51,7 @@ The definition of the inputs is as follows:
 | SampleLabels    | Cell array       | List of sample labels                     |
 | PositiveClasses | Cell array       | List of positive sample labels (**)       |
 
-_(*) For instance, a matrix of NxM results from a dimension reduction method such as Principal Component Analysis (PCA)._
+_(*) For instance, a matrix of NxM results from a dimension reduction method such as Principal Component Analysis (PCA) where the samples are placed as rows and the features as columns._
 
 _(**) Depending on the study, positive classes are usually ranked as the labels for which a particular prediction is desired. For example, sick patients (positive class) versus controls (negative class); or burnout (positive class), depression (positive class), versus control (negative class). If you are not sure which are your positive classes, then take the groups with the lower number of samples as positive._
 
@@ -67,7 +71,28 @@ Available indices:
 ->
 ```
 
-Here, you can select either a single index (e.g., 1)  or a group of them (e.g., 4:6). Then, a second prompt will be displayed asking the user if trustworthiness should be applied:
+Here, the user can select either a single index (e.g., 1) or a group of them (e.g., 4:6). In case if option `[1] Projection Separability Indices (PSIs)` is included in the selection, then the following prompt will be displayed:
+
+```
+PSIs projection type:
+[1] Centroid based (default)
+[2] Linear Discriminant Analyses (LDA) based
+->
+```
+
+Here, the user can specify the type of projection for computing the PSIs. This will define how the points should be projected before the evaluation of the separability. In case if the `centroid` approach is selected, then the following prompt will be displayed:
+
+```
+PSIs centroid formula:
+[1] Median (default)
+[2] Mean
+[3] Mode
+->
+```
+
+Here, the user can specify the criteria for computing (finding) the centroids of the groups. Note that `median` is selected by default because of its robustness to outliers.
+
+After these previous selections, a new prompt will be displayed asking the user if trustworthiness should be applied:
 
 ```
 Would you like to apply a trustworthiness (null model)?:
@@ -99,7 +124,18 @@ Available indices:
 # Select your indices (range between 1:8)
 -> 1:8
 
-Would you like to apply a trustworthiness (null model)?:
+PSIs projection type:
+[1] Centroid based (default)
+[2] Linear Discriminant Analyses (LDA) based
+-> 1
+
+PSIs centroid formula:
+[1] Median (default)
+[2] Mean
+[3] Mode
+-> 1
+
+Would you like to apply trustworthiness (null model)?:
 [y] Yes
 [n] No
 -> n
@@ -109,9 +145,7 @@ Processing validity indices...
 Done.
 ```
 
-Then the variable `ValidityIndicesResults` will contain all indices results. Thus, you can easily access them as `ValidityIndicesResults.psip`, `ValidityIndicesResults.dn`, `ValidityIndicesResults.th`, and so on.
-
-_**Hint: you can run [Example1.m](./Example1.m) for having a quick example of this section.**_
+Then the variable `ValidityIndicesResults` will contain all indices results. Thus, you can easily access them as `ValidityIndicesResults.PSIP`, `ValidityIndicesResults.DN`, `ValidityIndicesResults.GSI`, and so on.
 
 #### Running an analysis with trustworthiness
 
@@ -158,35 +192,46 @@ Available indices:
 # Select your indices (range between 1:8)
 -> 1:8
 
-Would you like to apply a trustworthiness (null model)?:
+PSIs projection type:
+[1] Centroid based (default)
+[2] Linear Discriminant Analyses (LDA) based
+-> 1
+
+PSIs centroid formula:
+[1] Median (default)
+[2] Mean
+[3] Mode
+-> 1
+
+Would you like to apply trustworthiness (null model)?:
 [y] Yes
 [n] No
 -> y
 
 How many iterations should be applied?:
 # Enter a number higher than 0
--> 100
+-> 1000
 
 Processing trustworthiness...
 
 Done.
 ```
 
-Then the variable `TrustworthinessResults` will contain all null model results. Hence, you can easily access them as `TrustworthinessResults.psip.PValue`, `TrustworthinessResults.dn.StandardDeviation`, and so on.
+Then the variable `TrustworthinessResults` will contain all null model results. Hence, you can easily access them as `TrustworthinessResults.PSIP.PValue`, `TrustworthinessResults.DN.StandardDeviation`, and so on.
 
-_**Hint: you can run [Example2.m](./Example2.m) for having a quick example of this section.**_
-
-##### Disabling command prompts
+### Disabling command prompts
 
 You can also pre-define the options inputted via command prompt by using the following optional arguments.
 
-| Optional argument | Type               | Description                                 |
-| ----------------- |:------------------:| ------------------------------------------- |
-| indices           | double (or range)  | Number or range of desired indices (*)      |
-| trustworthiness   | double             | Number of iterations for generating a null model (**) |
-| seed              | double             | Random seed                                 |
+| Optional argument | Type               | Description                                                            |
+| ----------------- |:------------------:| ---------------------------------------------------------------------- |
+| Indices           | double (or range)  | Number or range of desired indices (a)                                 |
+| Trustworthiness   | double             | Number of iterations for generating a null model (b)                   |
+| Seed              | double             | Random seed                                                            |
+| ProjectionType    | char               | Projection approach to be used when computing the PSIs (c)             |
+| CenterFormula     | char               | Approach for finding the groups' centroids when computing the PSIs (d) |
 
-(*) The numbering of the indices is as follows:
+_(a) The numbering of the indices is as follows:_
 
 ```
 [1] Projection Separability Indices (PSIs)
@@ -199,36 +244,47 @@ You can also pre-define the options inputted via command prompt by using the fol
 [8] Cluster Validity Density-involved Distance (CVDD)
 ```
 
-Also, you can input a range. For instance, 1:3 will calculate the PSI, DI, and DB.
+Also, you can input a range. For instance:
 
-(**) Regarding the `trustworthiness`, a value 0 will avoid the application of a null model.
+```matlab
+results = ProcessValidityIndices(DataMatrix, SampleLabels, PositiveClasses, 'Indices', 1:3);
+```
+
+Here, `1:3` means that the algorithm will compute the PSIs, DI, and DB.
+
+_(b) Regarding the `trustworthiness`, a value `0` will avoid the application of a null model._
+
+_(c) This option only takes effect if `'Indices', 1` or `Indices, 1:N` is inputted. In other cases, its value will be ignored._
+
+_(d) This option only takes effect if `'Indices', 1` or `Indices, 1:N`, and `'ProjectionType', 'centroid'` are inputted. In other cases, its value will be ignored._
 
 Let's check some examples:
 
 ```matlab
-results = ProcessValidityIndices(DataMatrix, SampleLabels, PositiveClasses, 'indices', 1:8, 'trustworthiness', 0);
+results = ProcessValidityIndices(DataMatrix, SampleLabels, PositiveClasses, 'Indices', 2:8, 'Trustworthiness', 0);
 ```
 
-The code above will calculate all indices from 1 to 8 (included) without the application of trustworthiness (null model) (see [Example1.m](./Example1.m)).
+The code above will calculate all indices from 2 to 8 (included) without the application of trustworthiness (null model).
 
 ```matlab
-results = ProcessValidityIndices(DataMatrix, SampleLabels, PositiveClasses, 'indices', 1:8, 'trustworthiness', 1000, 'seed', 100);
+results = ProcessValidityIndices(DataMatrix, SampleLabels, PositiveClasses, 'Indices', 1:8, 'ProjectionType', 'centroid', 'CenterFormula', 'median', 'Trustworthiness', 1000, 'seed', 100);
 ```
 
-The code above calculate all indices from 1 to 8 (included) and apply the trustworthiness by generating a null model of 100 iterations (see [Example2.m](./Example2.m)).
+The code above calculate all indices from 1 to 8 (included) and apply the trustworthiness by generating a null model of 100 iterations. Also, note that the PSIs will be computed using a centroid-based projection and the centers of the groups will be computed using `median`.
 
 ```matlab
-results = ProcessValidityIndices(DataMatrix, SampleLabels, PositiveClasses, 'indices', 1);
+results = ProcessValidityIndices(DataMatrix, SampleLabels, PositiveClasses, 'Indices', 1, 'ProjectionType', 'lda', 'Trustworthiness', 0);
 ```
 
-The code above pre-select index 1 and prompt the trustworthiness options.
+The code above will compute the PSIs using a Linear Discriminant Analysis (LDA) based projection and no trustworthiness will be applied.
 
 ```matlab
-results = ProcessValidityIndices(DataMatrix, SampleLabels, PositiveClasses, 'trustworthiness', 1000);
+results = ProcessValidityIndices(DataMatrix, SampleLabels, PositiveClasses, 'Trustworthiness', 1000);
 ```
 
 The code above pre-select a trustworthiness by generating a null model of 1000 iterations and prompt the selection of the indices.
 
+**Find more examples at [examples/](./examples) with different settings and use cases.**
 
 # Contact
 Please, report any issue here on Github or contact:

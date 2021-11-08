@@ -1,4 +1,4 @@
-# Measuring group-separability in geometrical space for evaluation of pattern recognition and embedding algorithms
+# Measuring group separability in geometrical space for evaluation of pattern recognition and dimension reduction algorithms
 
 ## Authors
 Aldo Acevedo, Claudio Durán, Sara Ciucci, Ming-Ju Kuo, and Carlo Vittorio Cannistraci

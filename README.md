@@ -31,7 +31,7 @@ You can find all initially studied datasets in the _[datasets](./datasets)_ fold
 
 ### Examples
 
-You can find meaningfull examples in the _[examples/](./examples)_ folder. If you want to execute them, locate yourself in the project's root and execute `addpath('examples')` to add the example files into the search path for the current MATLAB session.
+You can find meaningfull examples in the _[examples/](./examples)_ folder. If you want to execute them, locate yourself in the project's root and execute `addpath('examples/')` to add the example files into the search path for the current MATLAB session.
 
 ## Execution
 

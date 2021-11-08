@@ -131,7 +131,7 @@ pairwiseData = [dataGroupA; dataGroupB];
 
 projection = zeros(size(pairwiseData, 1), size(pairwiseData, 2));
 for ox=1:size(pairwiseData, 1)
-	projection(ox, :) = projectPointsOnLine(pairwiseData(ox, :),centroidsLine);
+	projection(ox, :) = projectPointOnLine(pairwiseData(ox, :),centroidsLine);
 end
 
 function projection = ldaBasedProjection(pairwiseData, pairwiseSamples)
@@ -157,7 +157,7 @@ end
 function centroidsLine = createLineBetweenCentroids(point1, point2)
 centroidsLine = [point1;point2];
 
-function projectedPoint = projectPointsOnLine(point, line)
+function projectedPoint = projectPointOnLine(point, line)
 A = line(1,:);
 B = line(2,:);
 

@@ -122,6 +122,56 @@ function TestCentroidBasedPerfectSeparation(testCase)
     verifyEqual(testCase, actual.sortedLabels, expected.sortedLabels);
 end
 
+function TestCentroidBasedHighDimensionalMulticlassSeparation(testCase)
+    testData = load('fisheriris');
+    [counts, positives] = groupcounts(testData.species);
+    [~,idx] = max(counts);
+    positives(idx) = [];
+
+    input.matrix = testData.meas;
+    input.samples = testData.species;
+    input.positive = positives;
+    input.formula = 'median';
+    input.projection = 'centroid';
+
+    expected.psiP = 0.0000;
+    expected.psiROC = 0.9723;
+    expected.psiPR = 0.9707;
+    expected.psiMCC = 0.8080;
+
+    [actual.psiP, actual.psiROC, actual.psiPR, actual.psiMCC, actual.dataClustered, actual.sortedLabels] = ProjectionSeparabilityIndex(input.matrix, input.samples, input.positive, input.projection, input.formula);
+
+    verifyEqual(testCase, round(actual.psiP, 4), expected.psiP);
+    verifyEqual(testCase, round(actual.psiROC, 4), expected.psiROC);
+    verifyEqual(testCase, round(actual.psiPR, 4), expected.psiPR);
+    verifyEqual(testCase, round(actual.psiMCC, 4), expected.psiMCC);
+end
+
+function TestLdaBasedHighDimensionalMulticlassSeparation(testCase)
+    testData = load('fisheriris');
+    [counts, positives] = groupcounts(testData.species);
+    [~,idx] = max(counts);
+    positives(idx) = []; 
+
+    input.matrix = testData.meas;
+    input.samples = testData.species;
+    input.positive = positives;
+    input.formula = ''; % ignored
+    input.projection = 'lda';
+
+    expected.psiP = 0.0000;
+    expected.psiROC = 0.9975;
+    expected.psiPR = 0.9976;
+    expected.psiMCC = 0.9644;
+
+    [actual.psiP, actual.psiROC, actual.psiPR, actual.psiMCC, actual.dataClustered, actual.sortedLabels] = ProjectionSeparabilityIndex(input.matrix, input.samples, input.positive, input.projection, input.formula);
+
+    verifyEqual(testCase, round(actual.psiP, 4), expected.psiP);
+    verifyEqual(testCase, round(actual.psiROC, 4), expected.psiROC);
+    verifyEqual(testCase, round(actual.psiPR, 4), expected.psiPR);
+    verifyEqual(testCase, round(actual.psiMCC, 4), expected.psiMCC);
+end
+
 function TestLdaBasedPerfectSeparation(testCase)
     input.matrix = [1 2; 3 4; 5 6; 7 8; 10 11; 12 13; 14 15; 16 17];
     input.samples = {'sample1','sample1','sample1','sample1','sample2','sample2','sample2','sample2'}';

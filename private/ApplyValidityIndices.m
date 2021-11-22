@@ -4,7 +4,8 @@ for mi=1:length(SelectedIndices)
 
 	switch CurrentIndex
 		case 1
-			[indices.PSIP, indices.PSIROC, indices.PSIPR, indices.PSIMCC, ~, ~] = ProjectionSeparabilityIndex(ProcessData.DataMatrix, ProcessData.SampleLabels, ProcessData.PositiveClasses, 'median');
+			[indices.PSIP, indices.PSIROC, indices.PSIPR, indices.PSIMCC, ~, ~] = ProjectionSeparabilityIndex(ProcessData.DataMatrix,...
+				ProcessData.SampleLabels, ProcessData.PositiveClasses, ProcessData.Options.ProjectionType, ProcessData.Options.CenterFormula);
 		case 2
 			indices.DI = DunnIndex(ProcessData.DataMatrix, ProcessData.SampleLabels, 'euclidean');
 		case 3

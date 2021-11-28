@@ -76,7 +76,7 @@ Here, the user can select either a single index (e.g., 1) or a group of them (e.
 ```
 PSIs projection type:
 [1] Centroid based (default)
-[2] Linear Discriminant Analyses (LDA) based
+[2] Linear Discriminant Analysis (LDA) based
 ->
 ```
 
@@ -126,7 +126,7 @@ Available indices:
 
 PSIs projection type:
 [1] Centroid based (default)
-[2] Linear Discriminant Analyses (LDA) based
+[2] Linear Discriminant Analysis (LDA) based
 -> 1
 
 PSIs centroid formula:
@@ -194,7 +194,7 @@ Available indices:
 
 PSIs projection type:
 [1] Centroid based (default)
-[2] Linear Discriminant Analyses (LDA) based
+[2] Linear Discriminant Analysis (LDA) based
 -> 1
 
 PSIs centroid formula:

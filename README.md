@@ -5,7 +5,7 @@ Aldo Acevedo, Claudio Durán, Sara Ciucci, Ming-Ju Kuo, Michael Schroeder, and C
 
 ## Description
 
-Here we propose a novel rationale named Projection Separability (PS), specifically designed to assess group separability of data samples in a geometrical space of dimensionality reduction analyses based on embedding algorithms. Our PS rationale states that any statistical separability measure - for instance, the ones commonly used to measure the performance of a binary classification model - can be used for evaluating the group separability of dimension reduction results based on the geometrical projection of the samples (points) of two different groups on the line that connects their centroids, and then repeating this procedure for all pairs of groups for which a separability evaluation is desired.
+Here, we propose a novel rationale named Projection Separability (PS), specifically designed to assess group separability of data samples in a geometrical space of dimensionality reduction analyses based on embedding algorithms. Our PS rationale states that any statistical separability measure - for instance, the ones commonly used to measure the performance of a binary classification model - can be used for evaluating the group separability of dimension reduction results based on the geometrical projection of the samples (points) of two different groups on the line that connects their centroids, and then repeating this procedure for all pairs of groups for which a separability evaluation is desired.
 
 ### Validity indices
 
@@ -13,7 +13,7 @@ Based on this new rationale, we implemented a new class of validity indices base
 
 ### Trustworthiness
 
-In order to prove and to account for the uncertainty of the separability estimation given by the indices, we also propose a second methodological innovation named _trustworthiness_. In brief, this methodology proposes a resampling to build a null model that allows computing an empirical _p_-value to assess the significance (trustworthiness) of the separability measure provided by a selected index. This means that trustworthiness assesses the extent to which the value produced by a certain index is reliable under uncertainty.
+To prove and account for the uncertainty of the separability estimation given by the indices, we also propose a second methodological innovation named _trustworthiness_. In brief, this methodology proposes a resampling to build a null model that allows computing an empirical _p_-value to assess the significance (trustworthiness) of the separability measure provided by a selected index. This means that trustworthiness assesses the extent to which the value produced by a certain index is reliable under uncertainty.
 
 ## Before starting
 
@@ -23,7 +23,7 @@ This source code has been developed and tested with MATLAB 2017a and newer versi
 
 ### Python package
 
-If you are a Python user, you may want to check out our python package [psis](https://pypi.org/project/psis/). The development of this Python wrapper is hosted in this repository [biomedical-cybernetics/pypsis](https://github.com/biomedical-cybernetics/pypsis); thus, please report any issues or questions regarding this wrapper there.
+If you are a Python user, check out our Python package [psis](https://pypi.org/project/psis/). The development of this Python wrapper is hosted in this repository [biomedical-cybernetics/pypsis](https://github.com/biomedical-cybernetics/pypsis); thus, please report any issues or questions regarding this wrapper there.
 
 ### Datasets
 
@@ -31,7 +31,7 @@ You can find all initially studied datasets in the _[datasets](./datasets)_ fold
 
 ### Examples
 
-You can find meaningfull examples in the _[examples](./examples)_ folder. If you want to execute them, locate yourself in the project's root and execute `addpath('examples/')` to add the example files into the search path for the current MATLAB session.
+You can find meaningfull examples in the _[examples](./examples)_ folder. If you want to execute them, locate yourself in the project's root and execute `addpath('examples/')` in the MATLAB's Command Window to add the example files into the search path for the current MATLAB session.
 
 ## Execution
 
